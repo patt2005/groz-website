@@ -297,10 +297,10 @@ class Lamborghini3D {
             }
         }, 5000);
         
-        console.log('Starting to load Lamborghini model from:', './models/lamborghini_venevo.glb');
+        console.log('Starting to load Lamborghini model from:', './models/2012_lamborghini_aventador.glb');
         
         loader.load(
-            './models/lamborghini_venevo.glb', // Your Lamborghini Veneno model
+            './models/2012_lamborghini_aventador.glb', // Your Lamborghini Aventador model
             (gltf) => {
                 clearTimeout(loadTimeout); // Clear the timeout since model loaded
                 console.log('Lamborghini model loaded successfully:', gltf);
@@ -421,7 +421,7 @@ class Lamborghini3D {
             (error) => {
                 clearTimeout(loadTimeout); // Clear the timeout since we got an error
                 console.error('Error loading Lamborghini model:', error);
-                console.error('Model path attempted:', './models/lamborghini_venevo.glb');
+                console.error('Model path attempted:', './models/2012_lamborghini_aventador.glb');
                 console.error('Current URL:', window.location.href);
                 
                 const loadingText = document.querySelector('.loading-indicator p');
@@ -849,10 +849,10 @@ class LamborghiniDriving extends Lamborghini3D {
             }
         }, 3000);
         
-        console.log('Starting to load DRIVING Lamborghini model from:', './models/lamborghini_venevo.glb');
+        console.log('Starting to load DRIVING Lamborghini model from:', './models/2012_lamborghini_aventador.glb');
         
         loader.load(
-            './models/lamborghini_venevo.glb',
+            './models/2012_lamborghini_aventador.glb',
             (gltf) => {
                 clearTimeout(loadTimeout); // Clear the timeout since model loaded
                 console.log('DRIVING Lamborghini model loaded successfully:', gltf);
@@ -925,7 +925,7 @@ class LamborghiniDriving extends Lamborghini3D {
             (error) => {
                 clearTimeout(loadTimeout); // Clear the timeout since we got an error
                 console.error('Error loading DRIVING Lamborghini model:', error);
-                console.error('DRIVING Model path attempted:', './models/lamborghini_venevo.glb');
+                console.error('DRIVING Model path attempted:', './models/2012_lamborghini_aventador.glb');
                 console.error('DRIVING Current URL:', window.location.href);
                 
                 const loadingText = document.querySelector(`#${this.loadingId} p`);
