@@ -288,23 +288,21 @@ class Lamborghini3D {
         // Show loading indicator
         loadingIndicator.style.display = 'block';
         
-        // Test if model file is accessible
-        fetch('./models/lamborghini_venevo.glb')
-            .then(response => {
-                console.log('Model file fetch response:', response.status, response.statusText);
-                if (!response.ok) {
-                    console.error('Model file not accessible:', response.status, response.statusText);
-                }
-            })
-            .catch(error => {
-                console.error('Model file fetch error:', error);
-            });
+        // Set a timeout to show fallback car if model doesn't load in 5 seconds
+        const loadTimeout = setTimeout(() => {
+            console.log('Model loading timeout - creating fallback car');
+            this.createFallbackCar();
+            if (loadingIndicator) {
+                loadingIndicator.style.display = 'none';
+            }
+        }, 5000);
         
         console.log('Starting to load Lamborghini model from:', './models/lamborghini_venevo.glb');
         
         loader.load(
             './models/lamborghini_venevo.glb', // Your Lamborghini Veneno model
             (gltf) => {
+                clearTimeout(loadTimeout); // Clear the timeout since model loaded
                 console.log('Lamborghini model loaded successfully:', gltf);
                 this.car = gltf.scene;
                 
@@ -421,13 +419,14 @@ class Lamborghini3D {
                 }
             },
             (error) => {
+                clearTimeout(loadTimeout); // Clear the timeout since we got an error
                 console.error('Error loading Lamborghini model:', error);
                 console.error('Model path attempted:', './models/lamborghini_venevo.glb');
                 console.error('Current URL:', window.location.href);
                 
                 const loadingText = document.querySelector('.loading-indicator p');
                 if (loadingText) {
-                    loadingText.textContent = 'Model failed to load. Creating fallback car...';
+                    loadingText.textContent = 'Creating Lamborghini...';
                 }
                 
                 // Create a fallback 3D car if model fails to load
@@ -440,45 +439,141 @@ class Lamborghini3D {
     }
     
     createFallbackCar() {
-        // Create a simple 3D car as fallback
+        console.log('Creating bright Lamborghini fallback car...');
+        
+        // Create a Lamborghini-style 3D car as fallback
         const carGroup = new THREE.Group();
         
-        // Car body
-        const bodyGeometry = new THREE.BoxGeometry(4, 1, 2);
-        const bodyMaterial = new THREE.MeshPhongMaterial({ color: 0xff6b35 });
+        // Main car body - sleek and low
+        const bodyGeometry = new THREE.BoxGeometry(5, 0.8, 2.2);
+        const bodyMaterial = new THREE.MeshStandardMaterial({ 
+            color: 0xff8844,
+            metalness: 1.0,
+            roughness: 0.05,
+            emissive: 0x441100,
+            emissiveIntensity: 0.3
+        });
         const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
-        body.position.y = 0.5;
+        body.position.y = 0.4;
+        body.castShadow = true;
+        body.receiveShadow = true;
         carGroup.add(body);
         
-        // Car roof
-        const roofGeometry = new THREE.BoxGeometry(2.5, 0.8, 1.8);
-        const roofMaterial = new THREE.MeshPhongMaterial({ color: 0xd64527 });
-        const roof = new THREE.Mesh(roofGeometry, roofMaterial);
-        roof.position.set(0, 1.4, 0);
-        carGroup.add(roof);
+        // Front section - more angular
+        const frontGeometry = new THREE.BoxGeometry(1.5, 0.6, 2);
+        const frontMaterial = new THREE.MeshStandardMaterial({ 
+            color: 0xffaa55,
+            metalness: 1.0,
+            roughness: 0.02,
+            emissive: 0x552200,
+            emissiveIntensity: 0.4
+        });
+        const front = new THREE.Mesh(frontGeometry, frontMaterial);
+        front.position.set(3, 0.3, 0);
+        front.castShadow = true;
+        carGroup.add(front);
         
-        // Wheels
-        const wheelGeometry = new THREE.CylinderGeometry(0.4, 0.4, 0.3, 16);
-        const wheelMaterial = new THREE.MeshPhongMaterial({ color: 0x333333 });
+        // Cockpit/Cabin - low profile
+        const cockpitGeometry = new THREE.BoxGeometry(2.8, 1.2, 1.8);
+        const cockpitMaterial = new THREE.MeshStandardMaterial({ 
+            color: 0xcc6622,
+            metalness: 0.9,
+            roughness: 0.1,
+            emissive: 0x331100,
+            emissiveIntensity: 0.25
+        });
+        const cockpit = new THREE.Mesh(cockpitGeometry, cockpitMaterial);
+        cockpit.position.set(-0.5, 1.2, 0);
+        cockpit.castShadow = true;
+        carGroup.add(cockpit);
         
-        const positions = [
-            [-1.5, 0, 1.2],
-            [1.5, 0, 1.2],
-            [-1.5, 0, -1.2],
-            [1.5, 0, -1.2]
-        ];
+        // Rear spoiler
+        const spoilerGeometry = new THREE.BoxGeometry(0.3, 0.8, 2.5);
+        const spoilerMaterial = new THREE.MeshStandardMaterial({ 
+            color: 0x444444,
+            metalness: 0.8,
+            roughness: 0.2
+        });
+        const spoiler = new THREE.Mesh(spoilerGeometry, spoilerMaterial);
+        spoiler.position.set(-2.8, 1.5, 0);
+        spoiler.castShadow = true;
+        carGroup.add(spoiler);
         
-        positions.forEach(pos => {
-            const wheel = new THREE.Mesh(wheelGeometry, wheelMaterial);
-            wheel.rotation.z = Math.PI / 2;
-            wheel.position.set(...pos);
-            carGroup.add(wheel);
+        // Wheels - more detailed
+        const wheelGeometry = new THREE.CylinderGeometry(0.5, 0.5, 0.4, 16);
+        const wheelMaterial = new THREE.MeshStandardMaterial({ 
+            color: 0x222222,
+            metalness: 0.9,
+            roughness: 0.3
         });
         
+        const rimGeometry = new THREE.CylinderGeometry(0.35, 0.35, 0.45, 16);
+        const rimMaterial = new THREE.MeshStandardMaterial({ 
+            color: 0x666666,
+            metalness: 1.0,
+            roughness: 0.1
+        });
+        
+        const wheelPositions = [
+            [-1.8, 0, 1.4],  // Front left
+            [1.8, 0, 1.4],   // Front right
+            [-1.8, 0, -1.4], // Rear left
+            [1.8, 0, -1.4]   // Rear right
+        ];
+        
+        wheelPositions.forEach(pos => {
+            const wheel = new THREE.Mesh(wheelGeometry, wheelMaterial);
+            const rim = new THREE.Mesh(rimGeometry, rimMaterial);
+            wheel.rotation.z = Math.PI / 2;
+            rim.rotation.z = Math.PI / 2;
+            wheel.position.set(...pos);
+            rim.position.set(...pos);
+            wheel.castShadow = true;
+            rim.castShadow = true;
+            carGroup.add(wheel);
+            carGroup.add(rim);
+        });
+        
+        // Headlights
+        const headlightGeometry = new THREE.SphereGeometry(0.2, 16, 16);
+        const headlightMaterial = new THREE.MeshStandardMaterial({ 
+            color: 0xffffff,
+            emissive: 0xffffff,
+            emissiveIntensity: 1.0,
+            transparent: true,
+            opacity: 0.9
+        });
+        
+        const leftHeadlight = new THREE.Mesh(headlightGeometry, headlightMaterial);
+        leftHeadlight.position.set(3.6, 0.4, 0.6);
+        const rightHeadlight = new THREE.Mesh(headlightGeometry, headlightMaterial);
+        rightHeadlight.position.set(3.6, 0.4, -0.6);
+        
+        carGroup.add(leftHeadlight);
+        carGroup.add(rightHeadlight);
+        
+        // Exhaust flames effect
+        const exhaustGeometry = new THREE.SphereGeometry(0.15, 8, 8);
+        const exhaustMaterial = new THREE.MeshBasicMaterial({ 
+            color: 0xff4400,
+            transparent: true,
+            opacity: 0.8
+        });
+        const exhaust1 = new THREE.Mesh(exhaustGeometry, exhaustMaterial);
+        const exhaust2 = new THREE.Mesh(exhaustGeometry, exhaustMaterial);
+        exhaust1.position.set(-3, 0.2, 0.4);
+        exhaust2.position.set(-3, 0.2, -0.4);
+        carGroup.add(exhaust1);
+        carGroup.add(exhaust2);
+        
         carGroup.position.set(0, -1, 0);
+        carGroup.scale.set(0.8, 0.8, 0.8); // Scale to fit nicely
+        
         this.car = carGroup;
         this.scene.add(this.car);
         this.isLoaded = true;
+        
+        console.log('Bright Lamborghini fallback car created successfully!');
     }
     
     setupEventListeners() {
@@ -745,11 +840,21 @@ class LamborghiniDriving extends Lamborghini3D {
             loadingIndicator.style.display = 'block';
         }
         
+        // Set a timeout to show fallback car if model doesn't load in 3 seconds (faster for driving section)
+        const loadTimeout = setTimeout(() => {
+            console.log('DRIVING Model loading timeout - creating fallback car');
+            this.createFallbackCar();
+            if (loadingIndicator) {
+                loadingIndicator.style.display = 'none';
+            }
+        }, 3000);
+        
         console.log('Starting to load DRIVING Lamborghini model from:', './models/lamborghini_venevo.glb');
         
         loader.load(
             './models/lamborghini_venevo.glb',
             (gltf) => {
+                clearTimeout(loadTimeout); // Clear the timeout since model loaded
                 console.log('DRIVING Lamborghini model loaded successfully:', gltf);
                 this.car = gltf.scene;
                 
@@ -818,13 +923,14 @@ class LamborghiniDriving extends Lamborghini3D {
                 }
             },
             (error) => {
+                clearTimeout(loadTimeout); // Clear the timeout since we got an error
                 console.error('Error loading DRIVING Lamborghini model:', error);
                 console.error('DRIVING Model path attempted:', './models/lamborghini_venevo.glb');
                 console.error('DRIVING Current URL:', window.location.href);
                 
                 const loadingText = document.querySelector(`#${this.loadingId} p`);
                 if (loadingText) {
-                    loadingText.textContent = 'Model failed to load. Creating fallback car...';
+                    loadingText.textContent = 'Creating Lamborghini...';
                 }
                 
                 this.createFallbackCar();
