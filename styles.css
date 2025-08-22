@@ -863,9 +863,18 @@ model-viewer {
     animation: driveDiagonally 8s ease-in-out infinite;
 }
 
-/* Make sure the driving Lamborghini looks like it's on the road */
-#driving-lamborghini {
-    filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.5));
+/* CSS Lamborghini emoji styling for guaranteed visibility */
+.css-lamborghini {
+    font-size: 60px;
+    text-align: center;
+    line-height: 80px;
+    filter: drop-shadow(0 5px 15px rgba(255, 107, 53, 0.7));
+    animation: carBounce 0.5s ease-in-out infinite alternate;
+}
+
+@keyframes carBounce {
+    0% { transform: translateY(0px) rotateZ(-2deg); }
+    100% { transform: translateY(-5px) rotateZ(2deg); }
 }
 
 #driving-3d-canvas {
