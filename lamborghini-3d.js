@@ -288,14 +288,29 @@ class Lamborghini3D {
         // Show loading indicator
         loadingIndicator.style.display = 'block';
         
-        // Set a timeout to show fallback car if model doesn't load in 5 seconds
+        // Test if model file exists first
+        fetch('./models/2012_lamborghini_aventador.glb', { method: 'HEAD' })
+            .then(response => {
+                console.log('Aventador model file check - Status:', response.status);
+                console.log('Aventador model file check - Headers:', [...response.headers.entries()]);
+                if (!response.ok) {
+                    console.error('Aventador model file not found or not accessible');
+                    console.log('Trying to load anyway...');
+                }
+            })
+            .catch(error => {
+                console.error('Aventador model file check failed:', error);
+            });
+
+        // Set a timeout to show fallback car if model doesn't load in 8 seconds (longer timeout)
         const loadTimeout = setTimeout(() => {
             console.log('Model loading timeout - creating fallback car');
+            console.log('The real Aventador model failed to load within 8 seconds');
             this.createFallbackCar();
             if (loadingIndicator) {
                 loadingIndicator.style.display = 'none';
             }
-        }, 5000);
+        }, 8000);
         
         console.log('Starting to load Lamborghini model from:', './models/2012_lamborghini_aventador.glb');
         
@@ -412,11 +427,13 @@ class Lamborghini3D {
                 console.log('Lamborghini loaded successfully!');
             },
             (progress) => {
-                const percent = (progress.loaded / progress.total * 100).toFixed(0);
+                console.log('Aventador loading progress:', progress);
+                const percent = progress.total > 0 ? (progress.loaded / progress.total * 100).toFixed(0) : '...';
                 const loadingText = document.querySelector('.loading-indicator p');
                 if (loadingText) {
-                    loadingText.textContent = `Loading Lamborghini... ${percent}%`;
+                    loadingText.textContent = `Loading Aventador... ${percent}%`;
                 }
+                console.log(`Aventador loading: ${progress.loaded}/${progress.total} bytes (${percent}%)`);
             },
             (error) => {
                 clearTimeout(loadTimeout); // Clear the timeout since we got an error
