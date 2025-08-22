@@ -28,7 +28,9 @@ class Lamborghini3D {
         this.setupLights();
         this.setupControls();
         this.loadModel();
-        this.setupEventListeners();
+        if (this.canvasId !== 'driving-3d-canvas') {
+            this.setupEventListeners();
+        }
         this.animate();
     }
     
@@ -472,6 +474,15 @@ class Lamborghini3D {
         // Handle window resize
         window.addEventListener('resize', () => this.onWindowResize());
         
+        // Handle resize specifically for this canvas
+        const resizeObserver = new ResizeObserver(() => {
+            this.onWindowResize();
+        });
+        const canvas = document.getElementById('hero-3d-canvas');
+        if (canvas) {
+            resizeObserver.observe(canvas);
+        }
+        
         // Mouse interaction for manual rotation
         const canvas = document.getElementById('hero-3d-canvas');
         canvas.addEventListener('mouseenter', () => {
@@ -657,12 +668,222 @@ class Lamborghini3D {
     }
 }
 
+// Driving Section Lamborghini Class
+class LamborghiniDriving extends Lamborghini3D {
+    constructor() {
+        super();
+        this.canvasId = 'driving-3d-canvas';
+        this.loadingId = 'driving-loading';
+        this.isDriving = true; // Always in driving mode
+        this.drivingPath = 'straight'; // Straight line driving for road section
+        this.init();
+        this.setupEventListeners();
+    }
+    
+    setupCamera() {
+        const canvas = document.getElementById(this.canvasId);
+        this.camera = new THREE.PerspectiveCamera(
+            60, // Wider field of view for driving
+            canvas.clientWidth / canvas.clientHeight,
+            0.1,
+            1000
+        );
+        this.camera.position.set(8, 4, 8); // Side view for driving
+    }
+    
+    setupRenderer() {
+        const canvas = document.getElementById(this.canvasId);
+        this.renderer = new THREE.WebGLRenderer({ 
+            canvas: canvas,
+            antialias: true,
+            alpha: true,
+            powerPreference: "high-performance"
+        });
+        this.renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+        this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        this.renderer.shadowMap.enabled = true;
+        this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        this.renderer.toneMapping = THREE.LinearToneMapping;
+        this.renderer.toneMappingExposure = 2.5;
+        this.renderer.outputEncoding = THREE.sRGBEncoding;
+        this.renderer.physicallyCorrectLights = false;
+        
+        this.renderer.shadowMap.autoUpdate = true;
+        this.renderer.gammaFactor = 1.8;
+    }
+    
+    setupControls() {
+        // No user controls for driving section - automatic camera
+        this.controls = null;
+    }
+    
+    loadModel() {
+        const loader = new GLTFLoader();
+        const loadingIndicator = document.getElementById(this.loadingId);
+        
+        if (loadingIndicator) {
+            loadingIndicator.style.display = 'block';
+        }
+        
+        loader.load(
+            './models/lamborghini_venevo.glb',
+            (gltf) => {
+                this.car = gltf.scene;
+                
+                // Scale and position for driving section
+                this.car.scale.set(1.2, 1.2, 1.2);
+                this.car.position.set(0, -1, 0);
+                this.car.rotation.y = Math.PI * 0.15; // Slight angle for dynamic look
+                
+                // Apply same material enhancements
+                this.car.traverse((child) => {
+                    if (child.isMesh) {
+                        child.castShadow = true;
+                        child.receiveShadow = true;
+                        
+                        if (child.material) {
+                            child.material.envMapIntensity = 3.0;
+                            if (this.envMap) {
+                                child.material.envMap = this.envMap;
+                            }
+                            
+                            if (!child.material.isMeshStandardMaterial) {
+                                const oldColor = child.material.color || new THREE.Color(0xff6b35);
+                                const newMaterial = new THREE.MeshStandardMaterial({
+                                    color: oldColor,
+                                    metalness: 0.9,
+                                    roughness: 0.1,
+                                    envMap: this.envMap,
+                                    envMapIntensity: 3.0
+                                });
+                                child.material = newMaterial;
+                            }
+                            
+                            child.material.metalness = 1.0;
+                            child.material.roughness = 0.05;
+                            
+                            if (child.material.color) {
+                                const color = child.material.color;
+                                if (color.r > 0.3 || color.g > 0.3 || color.b > 0.3) {
+                                    color.multiplyScalar(2.0);
+                                    child.material.emissive = color.clone().multiplyScalar(0.3);
+                                    child.material.emissiveIntensity = 0.5;
+                                    child.material.metalness = 1.0;
+                                    child.material.roughness = 0.02;
+                                }
+                            }
+                            
+                            child.material.needsUpdate = true;
+                        }
+                    }
+                });
+                
+                this.scene.add(this.car);
+                this.isLoaded = true;
+                
+                if (loadingIndicator) {
+                    loadingIndicator.style.display = 'none';
+                }
+                
+                console.log('Driving Lamborghini loaded successfully!');
+            },
+            (progress) => {
+                const percent = (progress.loaded / progress.total * 100).toFixed(0);
+                const loadingText = document.querySelector(`#${this.loadingId} p`);
+                if (loadingText) {
+                    loadingText.textContent = `Loading Lamborghini... ${percent}%`;
+                }
+            },
+            (error) => {
+                console.error('Error loading driving Lamborghini model:', error);
+                this.createFallbackCar();
+                if (loadingIndicator) {
+                    loadingIndicator.style.display = 'none';
+                }
+            }
+        );
+    }
+    
+    animate() {
+        requestAnimationFrame(() => this.animate());
+        
+        const delta = this.clock.getDelta();
+        const time = Date.now() * 0.001;
+        
+        if (this.mixer) {
+            this.mixer.update(delta);
+        }
+        
+        // Continuous straight-line driving animation
+        if (this.car && this.isLoaded) {
+            // Gentle bouncing while driving
+            this.car.position.y = -1 + Math.sin(time * 3) * 0.1;
+            
+            // Slight left-right sway for realism
+            this.car.position.x = Math.sin(time * 1.5) * 0.3;
+            
+            // Engine vibration
+            this.car.rotation.z = Math.sin(time * 20) * 0.005;
+        }
+        
+        // Dynamic lighting effects
+        if (this.lights) {
+            this.lights.accent.intensity = 5 + Math.sin(time * 2) * 2;
+            this.lights.rim.intensity = 4 + Math.sin(time * 3) * 1.5;
+            this.lights.under.intensity = 4 + Math.sin(time * 4) * 1;
+            this.lights.front.intensity = 4 + Math.sin(time * 4) * 1;
+            
+            if (this.lights.pink && this.lights.green) {
+                this.lights.pink.intensity = 3 + Math.sin(time * 2.5) * 1;
+                this.lights.green.intensity = 3 + Math.sin(time * 1.8) * 1;
+            }
+        }
+        
+        // Update particle system
+        if (this.particleSystem && this.particleSystem.material.uniforms) {
+            this.particleSystem.material.uniforms.time.value = time;
+            this.particleSystem.rotation.y += 0.001;
+        }
+        
+        this.renderer.render(this.scene, this.camera);
+    }
+    
+    onWindowResize() {
+        const canvas = document.getElementById(this.canvasId);
+        if (canvas) {
+            this.camera.aspect = canvas.clientWidth / canvas.clientHeight;
+            this.camera.updateProjectionMatrix();
+            this.renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+        }
+    }
+    
+    setupEventListeners() {
+        // Handle window resize
+        window.addEventListener('resize', () => this.onWindowResize());
+        
+        // Handle resize specifically for driving canvas
+        const resizeObserver = new ResizeObserver(() => {
+            this.onWindowResize();
+        });
+        const canvas = document.getElementById(this.canvasId);
+        if (canvas) {
+            resizeObserver.observe(canvas);
+        }
+    }
+}
+
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-    // Only initialize if the canvas exists
-    const canvas = document.getElementById('hero-3d-canvas');
-    if (canvas) {
+    // Initialize hero section Lamborghini
+    const heroCanvas = document.getElementById('hero-3d-canvas');
+    if (heroCanvas) {
         new Lamborghini3D();
+    }
+    
+    // Initialize driving section Lamborghini
+    const drivingCanvas = document.getElementById('driving-3d-canvas');
+    if (drivingCanvas) {
+        new LamborghiniDriving();
     }
 });
 
