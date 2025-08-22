@@ -345,5 +345,80 @@
     </footer>
 
     <script src="script.js"></script>
+    
+    <!-- Debug script for model loading -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('=== DEBUGGING MODEL LOADING ===');
+        
+        // Check if model-viewer is loaded
+        console.log('Model Viewer loaded:', typeof customElements.get('model-viewer'));
+        
+        const heroModel = document.getElementById('hero-lamborghini');
+        const drivingModel = document.getElementById('driving-lamborghini');
+        
+        if (heroModel) {
+            console.log('Hero model element found');
+            console.log('Hero model src:', heroModel.getAttribute('src'));
+            
+            heroModel.addEventListener('load', () => {
+                console.log('✅ Hero Lamborghini loaded successfully!');
+            });
+            
+            heroModel.addEventListener('error', (e) => {
+                console.error('❌ Hero Lamborghini failed to load:', e);
+            });
+            
+            // Test if model file is accessible
+            fetch('./models/2012_lamborghini_aventador.glb', { method: 'HEAD' })
+                .then(response => {
+                    console.log('Hero model file check - Status:', response.status, response.statusText);
+                    console.log('Hero model file size:', response.headers.get('content-length'), 'bytes');
+                })
+                .catch(error => {
+                    console.error('Hero model file check failed:', error);
+                });
+        } else {
+            console.error('❌ Hero model element NOT found');
+        }
+        
+        if (drivingModel) {
+            console.log('Driving model element found');
+            console.log('Driving model src:', drivingModel.getAttribute('src'));
+            
+            drivingModel.addEventListener('load', () => {
+                console.log('✅ Driving Lamborghini loaded successfully!');
+            });
+            
+            drivingModel.addEventListener('error', (e) => {
+                console.error('❌ Driving Lamborghini failed to load:', e);
+            });
+        } else {
+            console.error('❌ Driving model element NOT found');
+        }
+        
+        // Check current URL and paths
+        console.log('Current URL:', window.location.href);
+        console.log('Base URL:', window.location.origin);
+        console.log('Model path should be:', window.location.origin + '/models/2012_lamborghini_aventador.glb');
+        
+        // Test direct model access
+        setTimeout(() => {
+            console.log('=== TESTING DIRECT MODEL ACCESS ===');
+            fetch('./models/2012_lamborghini_aventador.glb')
+                .then(response => {
+                    console.log('Direct model access - Status:', response.status);
+                    console.log('Direct model access - Headers:', Object.fromEntries(response.headers.entries()));
+                    return response.blob();
+                })
+                .then(blob => {
+                    console.log('Model file downloaded successfully, size:', blob.size, 'bytes');
+                })
+                .catch(error => {
+                    console.error('❌ Direct model access failed:', error);
+                });
+        }, 2000);
+    });
+    </script>
 </body>
 </html>
