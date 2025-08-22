@@ -811,12 +811,13 @@ model-viewer {
 /* Driving Animation Section - 3D Car */
 .car-container-3d {
     position: absolute;
-    left: 8%;
-    bottom: 22%;
-    width: 220px;
-    height: 120px;
-    animation: drivingOnRoad 4s ease-in-out infinite;
+    left: -200px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 150px;
+    height: 80px;
     z-index: 10;
+    animation: driveAcrossScreen 8s linear infinite;
 }
 
 /* Make sure the driving Lamborghini looks like it's on the road */
@@ -1516,6 +1517,20 @@ model-viewer {
 }
 
 /* Driving Section Animations */
+@keyframes driveAcrossScreen {
+    0% {
+        left: -200px;
+        transform: translateY(-50%) rotateY(0deg);
+    }
+    50% {
+        transform: translateY(-50%) rotateY(0deg);
+    }
+    100% {
+        left: calc(100vw + 200px);
+        transform: translateY(-50%) rotateY(0deg);
+    }
+}
+
 @keyframes drivingOnRoad {
     0% {
         transform: translateX(0px) translateY(0px);

@@ -331,56 +331,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const drivingAnimation = new DrivingAnimation();
     const particleSystem = new ParticleSystem();
     
-    // Animate the driving Lamborghini Model Viewer to move across the road
-    const drivingCar = document.getElementById('driving-lamborghini');
-    
-    if (drivingCar) {
-        let startTime = Date.now();
-        
-        function animateModelViewerDriving() {
-            const elapsed = (Date.now() - startTime) / 1000;
-            
-            // Create smooth driving motion across the road (side to side)
-            const progress = (elapsed * 0.4) % 6; // Complete cycle every 15 seconds
-            let x = 0;
-            let y = 0;
-            
-            if (progress < 1.5) {
-                // Drive right across the road
-                x = (progress / 1.5) * 400;
-                y = Math.sin(progress * Math.PI) * 8; // Gentle bouncing
-            } else if (progress < 3) {
-                // Continue right, then start turning
-                x = 400 + ((progress - 1.5) / 1.5) * 200;
-                y = Math.sin((progress - 1.5) * Math.PI) * 6;
-            } else if (progress < 4.5) {
-                // Drive back left
-                x = 600 - ((progress - 3) / 1.5) * 400;
-                y = Math.sin((progress - 3) * Math.PI) * 10;
-            } else {
-                // Return to start position
-                x = 200 - ((progress - 4.5) / 1.5) * 200;
-                y = Math.sin((progress - 4.5) * Math.PI) * 5;
-            }
-            
-            // Apply the transform to the car container
-            const container = drivingCar.parentElement;
-            if (container) {
-                container.style.transform = `translate(${x}px, ${y}px)`;
-                
-                // Add slight rotation based on direction
-                const rotation = Math.sin(progress * 0.5) * 5;
-                drivingCar.style.transform = `rotateZ(${rotation}deg)`;
-            }
-            
-            requestAnimationFrame(animateModelViewerDriving);
-        }
-        
-        // Start the Model Viewer driving animation
-        setTimeout(() => {
-            animateModelViewerDriving();
-        }, 2000); // Start after 2 seconds to let the model load
-    }
+    // Simple CSS animation is now handling the driving - no JavaScript needed!
     
     // Start counter animation when stats section is visible
     const statsObserver = new IntersectionObserver((entries) => {
