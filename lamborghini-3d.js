@@ -14,6 +14,9 @@ class Lamborghini3D {
         this.isLoaded = false;
         this.autoRotate = true;
         this.lightsOn = true;
+        this.drivingMode = false;
+        this.drivingStartTime = 0;
+        this.originalPosition = { x: 0, y: -1, z: 0 };
         
         this.init();
     }
@@ -33,20 +36,119 @@ class Lamborghini3D {
         this.scene = new THREE.Scene();
         this.scene.background = new THREE.Color(0x0a0a0a);
         
-        // Add fog for depth
-        this.scene.fog = new THREE.Fog(0x0a0a0a, 50, 200);
+        // Add fog for depth with better parameters
+        this.scene.fog = new THREE.Fog(0x0a0a0a, 30, 100);
         
-        // Add ground plane
+        // Add enhanced ground plane
         const groundGeometry = new THREE.PlaneGeometry(200, 200);
-        const groundMaterial = new THREE.MeshLambertMaterial({ 
+        const groundMaterial = new THREE.MeshStandardMaterial({ 
             color: 0x1a1a1a,
             transparent: true,
-            opacity: 0.5
+            opacity: 0.7,
+            roughness: 0.8,
+            metalness: 0.2
         });
         const ground = new THREE.Mesh(groundGeometry, groundMaterial);
         ground.rotation.x = -Math.PI / 2;
         ground.position.y = -2;
+        ground.receiveShadow = true;
         this.scene.add(ground);
+        
+        // Add particle system for atmospheric effects
+        this.createParticleSystem();
+        
+        // Add environment reflections
+        this.setupEnvironmentReflections();
+    }
+    
+    createParticleSystem() {
+        const particleCount = 1000;
+        const particles = new THREE.BufferGeometry();
+        const positions = new Float32Array(particleCount * 3);
+        const colors = new Float32Array(particleCount * 3);
+        const sizes = new Float32Array(particleCount);
+        
+        const color1 = new THREE.Color(0xff6b35);
+        const color2 = new THREE.Color(0x00d4ff);
+        
+        for (let i = 0; i < particleCount; i++) {
+            // Random positions in a sphere around the scene
+            const radius = Math.random() * 100 + 50;
+            const theta = Math.random() * Math.PI * 2;
+            const phi = Math.random() * Math.PI;
+            
+            positions[i * 3] = radius * Math.sin(phi) * Math.cos(theta);
+            positions[i * 3 + 1] = (Math.random() - 0.5) * 40;
+            positions[i * 3 + 2] = radius * Math.sin(phi) * Math.sin(theta);
+            
+            // Random colors between orange and blue
+            const mixRatio = Math.random();
+            const color = color1.clone().lerp(color2, mixRatio);
+            colors[i * 3] = color.r;
+            colors[i * 3 + 1] = color.g;
+            colors[i * 3 + 2] = color.b;
+            
+            sizes[i] = Math.random() * 2 + 0.5;
+        }
+        
+        particles.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        particles.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+        particles.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+        
+        const particleMaterial = new THREE.ShaderMaterial({
+            uniforms: {
+                time: { value: 0 }
+            },
+            vertexShader: `
+                attribute float size;
+                attribute vec3 color;
+                varying vec3 vColor;
+                uniform float time;
+                
+                void main() {
+                    vColor = color;
+                    vec3 pos = position;
+                    pos.y += sin(time + position.x * 0.01) * 2.0;
+                    pos.x += cos(time + position.z * 0.01) * 1.0;
+                    
+                    vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
+                    gl_PointSize = size * (300.0 / -mvPosition.z);
+                    gl_Position = projectionMatrix * mvPosition;
+                }
+            `,
+            fragmentShader: `
+                varying vec3 vColor;
+                
+                void main() {
+                    float distance = length(gl_PointCoord - vec2(0.5));
+                    if (distance > 0.5) discard;
+                    
+                    float alpha = 1.0 - distance * 2.0;
+                    gl_FragColor = vec4(vColor, alpha * 0.3);
+                }
+            `,
+            blending: THREE.AdditiveBlending,
+            transparent: true,
+            depthWrite: false
+        });
+        
+        this.particleSystem = new THREE.Points(particles, particleMaterial);
+        this.scene.add(this.particleSystem);
+    }
+    
+    setupEnvironmentReflections() {
+        // Create a simple environment map for reflections
+        const cubeRenderTarget = new THREE.WebGLCubeRenderTarget(256, {
+            format: THREE.RGBFormat,
+            generateMipmaps: true,
+            minFilter: THREE.LinearMipmapLinearFilter
+        });
+        
+        const cubeCamera = new THREE.CubeCamera(1, 1000, cubeRenderTarget);
+        this.scene.add(cubeCamera);
+        
+        this.envMap = cubeRenderTarget.texture;
+        this.cubeCamera = cubeCamera;
     }
     
     setupCamera() {
@@ -65,52 +167,89 @@ class Lamborghini3D {
         this.renderer = new THREE.WebGLRenderer({ 
             canvas: canvas,
             antialias: true,
-            alpha: true
+            alpha: true,
+            powerPreference: "high-performance"
         });
         this.renderer.setSize(canvas.clientWidth, canvas.clientHeight);
-        this.renderer.setPixelRatio(window.devicePixelRatio);
+        this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         this.renderer.shadowMap.enabled = true;
         this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
         this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-        this.renderer.toneMappingExposure = 1.2;
+        this.renderer.toneMappingExposure = 1.4;
+        this.renderer.outputEncoding = THREE.sRGBEncoding;
+        this.renderer.physicallyCorrectLights = true;
+        
+        // Enable additional quality settings
+        this.renderer.shadowMap.autoUpdate = true;
+        this.renderer.gammaFactor = 2.2;
     }
     
     setupLights() {
-        // Ambient light
-        const ambientLight = new THREE.AmbientLight(0x404040, 0.3);
+        // Enhanced ambient light for better visibility
+        const ambientLight = new THREE.AmbientLight(0x606060, 0.6);
         this.scene.add(ambientLight);
         
-        // Main directional light
-        const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+        // Main directional light with higher intensity
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
         directionalLight.position.set(10, 10, 5);
         directionalLight.castShadow = true;
+        directionalLight.shadow.mapSize.width = 2048;
+        directionalLight.shadow.mapSize.height = 2048;
         directionalLight.shadow.camera.near = 0.1;
         directionalLight.shadow.camera.far = 50;
         directionalLight.shadow.camera.left = -10;
         directionalLight.shadow.camera.right = 10;
         directionalLight.shadow.camera.top = 10;
         directionalLight.shadow.camera.bottom = -10;
+        directionalLight.shadow.bias = -0.0001;
         this.scene.add(directionalLight);
         
-        // Orange accent light
-        const accentLight = new THREE.PointLight(0xff6b35, 2, 20);
+        // Enhanced orange accent light
+        const accentLight = new THREE.PointLight(0xff6b35, 3, 25);
         accentLight.position.set(-5, 5, 5);
+        accentLight.castShadow = true;
         this.scene.add(accentLight);
         
-        // Blue rim light
-        const rimLight = new THREE.PointLight(0x00d4ff, 1, 15);
+        // Enhanced blue rim light
+        const rimLight = new THREE.PointLight(0x00d4ff, 2, 20);
         rimLight.position.set(5, 3, -5);
         this.scene.add(rimLight);
         
-        // Spot light for dramatic effect
-        const spotLight = new THREE.SpotLight(0xffffff, 1);
+        // Front headlight simulation
+        const frontLight = new THREE.SpotLight(0xffffff, 2);
+        frontLight.position.set(0, 2, 8);
+        frontLight.target.position.set(0, 0, 0);
+        frontLight.angle = Math.PI / 4;
+        frontLight.penumbra = 0.1;
+        frontLight.decay = 2;
+        frontLight.distance = 30;
+        this.scene.add(frontLight);
+        this.scene.add(frontLight.target);
+        
+        // Enhanced spot light for dramatic effect
+        const spotLight = new THREE.SpotLight(0xffffff, 1.5);
         spotLight.position.set(0, 15, 0);
         spotLight.target.position.set(0, 0, 0);
         spotLight.angle = Math.PI / 6;
         spotLight.penumbra = 0.2;
         spotLight.castShadow = true;
+        spotLight.shadow.mapSize.width = 1024;
+        spotLight.shadow.mapSize.height = 1024;
         this.scene.add(spotLight);
         this.scene.add(spotLight.target);
+        
+        // Add car underlight for glow effect
+        const underLight = new THREE.PointLight(0xff6b35, 1.5, 10);
+        underLight.position.set(0, -1.5, 0);
+        this.scene.add(underLight);
+        
+        // Store lights for animation
+        this.lights = {
+            accent: accentLight,
+            rim: rimLight,
+            front: frontLight,
+            under: underLight
+        };
     }
     
     setupControls() {
@@ -140,15 +279,46 @@ class Lamborghini3D {
                 this.car.scale.set(1.5, 1.5, 1.5);
                 this.car.position.set(0, -1, 0);
                 
-                // Enable shadows
+                // Enable shadows and enhance materials
                 this.car.traverse((child) => {
                     if (child.isMesh) {
                         child.castShadow = true;
                         child.receiveShadow = true;
                         
-                        // Enhance materials
+                        // Enhance materials for better lighting
                         if (child.material) {
-                            child.material.envMapIntensity = 1;
+                            child.material.envMapIntensity = 2.0;
+                            
+                            // Apply environment map for reflections
+                            if (this.envMap) {
+                                child.material.envMap = this.envMap;
+                            }
+                            
+                            // If it's a MeshStandardMaterial, enhance it
+                            if (child.material.isMeshStandardMaterial) {
+                                child.material.metalness = Math.max(child.material.metalness, 0.8);
+                                child.material.roughness = Math.min(child.material.roughness, 0.2);
+                            }
+                            
+                            // Add emissive properties for car lights/details
+                            if (child.name && (child.name.includes('light') || child.name.includes('headlight'))) {
+                                child.material.emissive = new THREE.Color(0xffffff);
+                                child.material.emissiveIntensity = 0.8;
+                            }
+                            
+                            // Enhance car body materials
+                            if (child.material.color) {
+                                const color = child.material.color;
+                                if (color.r > 0.5 && color.g < 0.4 && color.b < 0.4) { // Likely car body red/orange
+                                    child.material.metalness = 0.9;
+                                    child.material.roughness = 0.1;
+                                    child.material.emissive = new THREE.Color(0x441100);
+                                    child.material.emissiveIntensity = 0.15;
+                                }
+                            }
+                            
+                            // Force material update
+                            child.material.needsUpdate = true;
                         }
                     }
                 });
@@ -272,7 +442,7 @@ class Lamborghini3D {
                 break;
                 
             case 'doors':
-                this.animateCarFeature();
+                this.startDrivingAnimation();
                 break;
         }
     }
@@ -291,29 +461,67 @@ class Lamborghini3D {
         });
     }
     
-    animateCarFeature() {
+    startDrivingAnimation() {
         if (!this.car) return;
         
-        // Create a bounce animation
-        const originalY = this.car.position.y;
-        const duration = 1000;
-        const startTime = Date.now();
+        this.drivingMode = !this.drivingMode;
+        this.drivingStartTime = Date.now();
         
-        const animate = () => {
-            const elapsed = Date.now() - startTime;
-            const progress = Math.min(elapsed / duration, 1);
-            const bounceHeight = Math.sin(progress * Math.PI * 4) * 0.5;
-            
-            this.car.position.y = originalY + bounceHeight;
-            
-            if (progress < 1) {
-                requestAnimationFrame(animate);
-            } else {
-                this.car.position.y = originalY;
+        if (this.drivingMode) {
+            // Disable auto-rotate during driving
+            this.controls.autoRotate = false;
+            // Store original position
+            this.originalPosition = {
+                x: this.car.position.x,
+                y: this.car.position.y,
+                z: this.car.position.z
+            };
+        } else {
+            // Reset position when stopping
+            this.car.position.set(this.originalPosition.x, this.originalPosition.y, this.originalPosition.z);
+            this.car.rotation.set(0, 0, 0);
+            if (this.autoRotate) {
+                this.controls.autoRotate = true;
             }
-        };
+        }
+    }
+    
+    updateDrivingAnimation() {
+        if (!this.drivingMode || !this.car) return;
         
-        animate();
+        const elapsed = (Date.now() - this.drivingStartTime) / 1000;
+        
+        // Driving path - figure 8 pattern across the screen
+        const speed = 2.0;
+        const pathRadius = 8;
+        
+        // Calculate position along figure-8 path
+        const t = elapsed * speed * 0.5;
+        const x = pathRadius * Math.sin(t);
+        const z = pathRadius * Math.sin(t) * Math.cos(t);
+        const y = this.originalPosition.y + Math.sin(elapsed * 4) * 0.3; // Gentle bouncing
+        
+        this.car.position.set(x, y, z);
+        
+        // Car rotation to follow the path direction
+        const dx = pathRadius * Math.cos(t) * speed * 0.5;
+        const dz = pathRadius * (Math.cos(t) * Math.cos(t) - Math.sin(t) * Math.sin(t)) * speed * 0.5;
+        this.car.rotation.y = Math.atan2(dx, dz) + Math.PI;
+        
+        // Add slight tilting during turns
+        const turnIntensity = Math.abs(dx) * 0.1;
+        this.car.rotation.z = dx > 0 ? -turnIntensity : turnIntensity;
+        
+        // Animate lights during driving
+        if (this.lights) {
+            const pulseIntensity = 1 + Math.sin(elapsed * 8) * 0.3;
+            this.lights.front.intensity = 2 * pulseIntensity;
+            this.lights.under.intensity = 1.5 * pulseIntensity;
+            
+            // Move accent lights to follow the car
+            this.lights.accent.position.set(x - 3, 5, z + 3);
+            this.lights.rim.position.set(x + 3, 3, z - 3);
+        }
     }
     
     onWindowResize() {
@@ -336,13 +544,39 @@ class Lamborghini3D {
             this.controls.update();
         }
         
-        // Add floating animation to the car
-        if (this.car && this.isLoaded) {
-            this.car.position.y += Math.sin(Date.now() * 0.001) * 0.002;
+        // Update driving animation if active
+        this.updateDrivingAnimation();
+        
+        // Add floating animation to the car (only when not driving)
+        if (this.car && this.isLoaded && !this.drivingMode) {
+            this.car.position.y = this.originalPosition.y + Math.sin(Date.now() * 0.001) * 0.1;
             
             // Add subtle rotation when auto-rotate is off
             if (!this.controls.autoRotate) {
                 this.car.rotation.y += 0.002;
+            }
+        }
+        
+        // Animate lights for extra effects
+        if (this.lights && !this.drivingMode) {
+            const time = Date.now() * 0.001;
+            this.lights.accent.intensity = 3 + Math.sin(time * 2) * 0.5;
+            this.lights.rim.intensity = 2 + Math.sin(time * 3) * 0.3;
+            this.lights.under.intensity = 1.5 + Math.sin(time * 4) * 0.2;
+        }
+        
+        // Update particle system
+        if (this.particleSystem && this.particleSystem.material.uniforms) {
+            this.particleSystem.material.uniforms.time.value = Date.now() * 0.001;
+            this.particleSystem.rotation.y += 0.001;
+        }
+        
+        // Update environment reflections occasionally
+        if (this.cubeCamera && this.car && this.isLoaded) {
+            // Update every 60 frames for performance
+            if (Date.now() % 1000 < 16) {
+                this.cubeCamera.position.copy(this.car.position);
+                this.cubeCamera.update(this.renderer, this.scene);
             }
         }
         
