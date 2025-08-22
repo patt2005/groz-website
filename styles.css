@@ -819,43 +819,75 @@ model-viewer {
     --animate-duration: 4s;
 }
 
-/* Diagonal driving animation across the entire screen */
+/* Desktop/Laptop specific positioning */
+@media (min-width: 768px) {
+    .car-container-3d {
+        width: 200px;
+        height: 100px;
+        top: 70vh;
+    }
+    
+    .visible-lamborghini {
+        width: 160px;
+        height: 70px;
+    }
+    
+    .car-body {
+        width: 160px;
+        height: 50px;
+    }
+}
+
+/* Diagonal driving animation - works on ALL devices */
 @keyframes driveDiagonally {
     0% {
-        left: -200px;
-        top: 90vh;
-        transform: rotateZ(-25deg) scale(0.8);
+        left: -250px;
+        top: 95vh;
+        transform: rotateZ(-20deg) scale(0.7);
         opacity: 0;
     }
-    10% {
+    5% {
         opacity: 1;
     }
-    25% {
-        left: 25vw;
-        top: 70vh;
-        transform: rotateZ(-10deg) scale(1.0);
+    20% {
+        left: 20vw;
+        top: 80vh;
+        transform: rotateZ(-10deg) scale(0.9);
         opacity: 1;
     }
-    50% {
-        left: 50vw;
-        top: 50vh;
-        transform: rotateZ(0deg) scale(1.2);
+    40% {
+        left: 40vw;
+        top: 60vh;
+        transform: rotateZ(-5deg) scale(1.0);
         opacity: 1;
     }
-    75% {
-        left: 75vw;
-        top: 30vh;
-        transform: rotateZ(10deg) scale(1.0);
+    60% {
+        left: 60vw;
+        top: 40vh;
+        transform: rotateZ(5deg) scale(1.1);
         opacity: 1;
     }
-    90% {
+    80% {
+        left: 80vw;
+        top: 20vh;
+        transform: rotateZ(15deg) scale(0.9);
+        opacity: 1;
+    }
+    95% {
         opacity: 1;
     }
     100% {
-        left: calc(100vw + 200px);
-        top: 10vh;
-        transform: rotateZ(25deg) scale(0.8);
+        left: calc(100vw + 250px);
+        top: 5vh;
+        transform: rotateZ(20deg) scale(0.7);
         opacity: 0;
+    }
+}
+
+/* Desktop animation timing */
+@media (min-width: 768px) {
+    .car-container-3d.driving {
+        animation: driveDiagonally 10s ease-in-out infinite;
     }
 }
 
