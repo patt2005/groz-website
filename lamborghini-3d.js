@@ -34,10 +34,10 @@ class Lamborghini3D {
     
     setupScene() {
         this.scene = new THREE.Scene();
-        this.scene.background = new THREE.Color(0x0a0a0a);
+        this.scene.background = new THREE.Color(0x1a1a1a); // Lighter background
         
         // Add fog for depth with better parameters
-        this.scene.fog = new THREE.Fog(0x0a0a0a, 30, 100);
+        this.scene.fog = new THREE.Fog(0x1a1a1a, 30, 100);
         
         // Add enhanced ground plane
         const groundGeometry = new THREE.PlaneGeometry(200, 200);
@@ -174,23 +174,23 @@ class Lamborghini3D {
         this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         this.renderer.shadowMap.enabled = true;
         this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-        this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-        this.renderer.toneMappingExposure = 1.4;
+        this.renderer.toneMapping = THREE.LinearToneMapping;
+        this.renderer.toneMappingExposure = 2.5; // Much higher exposure for brightness
         this.renderer.outputEncoding = THREE.sRGBEncoding;
-        this.renderer.physicallyCorrectLights = true;
+        this.renderer.physicallyCorrectLights = false; // Disable for more dramatic lighting
         
-        // Enable additional quality settings
+        // Optimize for brightness and vibrancy
         this.renderer.shadowMap.autoUpdate = true;
-        this.renderer.gammaFactor = 2.2;
+        this.renderer.gammaFactor = 1.8; // Adjusted for better contrast
     }
     
     setupLights() {
-        // Enhanced ambient light for better visibility
-        const ambientLight = new THREE.AmbientLight(0x606060, 0.6);
+        // Much brighter ambient light for overall illumination
+        const ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
         this.scene.add(ambientLight);
         
-        // Main directional light with higher intensity
-        const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
+        // Very bright main directional light
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 3.0);
         directionalLight.position.set(10, 10, 5);
         directionalLight.castShadow = true;
         directionalLight.shadow.mapSize.width = 2048;
@@ -204,42 +204,56 @@ class Lamborghini3D {
         directionalLight.shadow.bias = -0.0001;
         this.scene.add(directionalLight);
         
-        // Enhanced orange accent light
-        const accentLight = new THREE.PointLight(0xff6b35, 3, 25);
+        // Additional directional lights for even coverage
+        const directionalLight2 = new THREE.DirectionalLight(0xffffff, 2.0);
+        directionalLight2.position.set(-10, 8, -5);
+        this.scene.add(directionalLight2);
+        
+        const directionalLight3 = new THREE.DirectionalLight(0xffffff, 1.5);
+        directionalLight3.position.set(0, -5, 10);
+        this.scene.add(directionalLight3);
+        
+        // Bright orange accent light
+        const accentLight = new THREE.PointLight(0xff6b35, 5, 30);
         accentLight.position.set(-5, 5, 5);
-        accentLight.castShadow = true;
         this.scene.add(accentLight);
         
-        // Enhanced blue rim light
-        const rimLight = new THREE.PointLight(0x00d4ff, 2, 20);
+        // Bright blue rim light
+        const rimLight = new THREE.PointLight(0x00d4ff, 4, 25);
         rimLight.position.set(5, 3, -5);
         this.scene.add(rimLight);
         
-        // Front headlight simulation
-        const frontLight = new THREE.SpotLight(0xffffff, 2);
+        // Additional colorful accent lights
+        const pinkLight = new THREE.PointLight(0xff69b4, 3, 20);
+        pinkLight.position.set(-8, 8, 0);
+        this.scene.add(pinkLight);
+        
+        const greenLight = new THREE.PointLight(0x00ff88, 3, 20);
+        greenLight.position.set(8, 8, 0);
+        this.scene.add(greenLight);
+        
+        // Front headlight simulation - much brighter
+        const frontLight = new THREE.SpotLight(0xffffff, 4);
         frontLight.position.set(0, 2, 8);
         frontLight.target.position.set(0, 0, 0);
-        frontLight.angle = Math.PI / 4;
+        frontLight.angle = Math.PI / 3;
         frontLight.penumbra = 0.1;
-        frontLight.decay = 2;
-        frontLight.distance = 30;
+        frontLight.decay = 1;
+        frontLight.distance = 40;
         this.scene.add(frontLight);
         this.scene.add(frontLight.target);
         
         // Enhanced spot light for dramatic effect
-        const spotLight = new THREE.SpotLight(0xffffff, 1.5);
+        const spotLight = new THREE.SpotLight(0xffffff, 3.0);
         spotLight.position.set(0, 15, 0);
         spotLight.target.position.set(0, 0, 0);
-        spotLight.angle = Math.PI / 6;
-        spotLight.penumbra = 0.2;
-        spotLight.castShadow = true;
-        spotLight.shadow.mapSize.width = 1024;
-        spotLight.shadow.mapSize.height = 1024;
+        spotLight.angle = Math.PI / 4;
+        spotLight.penumbra = 0.1;
         this.scene.add(spotLight);
         this.scene.add(spotLight.target);
         
-        // Add car underlight for glow effect
-        const underLight = new THREE.PointLight(0xff6b35, 1.5, 10);
+        // Bright car underlight for glow effect
+        const underLight = new THREE.PointLight(0xff6b35, 4, 15);
         underLight.position.set(0, -1.5, 0);
         this.scene.add(underLight);
         
@@ -248,7 +262,9 @@ class Lamborghini3D {
             accent: accentLight,
             rim: rimLight,
             front: frontLight,
-            under: underLight
+            under: underLight,
+            pink: pinkLight,
+            green: greenLight
         };
     }
     
@@ -285,35 +301,76 @@ class Lamborghini3D {
                         child.castShadow = true;
                         child.receiveShadow = true;
                         
-                        // Enhance materials for better lighting
+                        // Dramatically enhance materials for bright, colorful look
                         if (child.material) {
-                            child.material.envMapIntensity = 2.0;
+                            child.material.envMapIntensity = 3.0;
                             
                             // Apply environment map for reflections
                             if (this.envMap) {
                                 child.material.envMap = this.envMap;
                             }
                             
-                            // If it's a MeshStandardMaterial, enhance it
-                            if (child.material.isMeshStandardMaterial) {
-                                child.material.metalness = Math.max(child.material.metalness, 0.8);
-                                child.material.roughness = Math.min(child.material.roughness, 0.2);
+                            // Convert all materials to MeshStandardMaterial if they aren't already
+                            if (!child.material.isMeshStandardMaterial) {
+                                const oldColor = child.material.color || new THREE.Color(0xff6b35);
+                                const newMaterial = new THREE.MeshStandardMaterial({
+                                    color: oldColor,
+                                    metalness: 0.9,
+                                    roughness: 0.1,
+                                    envMap: this.envMap,
+                                    envMapIntensity: 3.0
+                                });
+                                child.material = newMaterial;
                             }
+                            
+                            // Make everything highly reflective and bright
+                            child.material.metalness = 1.0;
+                            child.material.roughness = 0.05;
                             
                             // Add emissive properties for car lights/details
                             if (child.name && (child.name.includes('light') || child.name.includes('headlight'))) {
                                 child.material.emissive = new THREE.Color(0xffffff);
-                                child.material.emissiveIntensity = 0.8;
+                                child.material.emissiveIntensity = 1.5;
                             }
                             
-                            // Enhance car body materials
+                            // Enhance and brighten car body materials
                             if (child.material.color) {
                                 const color = child.material.color;
-                                if (color.r > 0.5 && color.g < 0.4 && color.b < 0.4) { // Likely car body red/orange
-                                    child.material.metalness = 0.9;
-                                    child.material.roughness = 0.1;
-                                    child.material.emissive = new THREE.Color(0x441100);
-                                    child.material.emissiveIntensity = 0.15;
+                                
+                                // Make car body bright and colorful
+                                if (color.r > 0.3 || color.g > 0.3 || color.b > 0.3) {
+                                    // Brighten the base color significantly
+                                    color.multiplyScalar(2.0);
+                                    
+                                    // Add strong emissive glow
+                                    child.material.emissive = color.clone().multiplyScalar(0.3);
+                                    child.material.emissiveIntensity = 0.5;
+                                    
+                                    // Perfect mirror-like finish
+                                    child.material.metalness = 1.0;
+                                    child.material.roughness = 0.02;
+                                }
+                                
+                                // Special handling for specific parts
+                                if (child.name) {
+                                    const name = child.name.toLowerCase();
+                                    if (name.includes('body') || name.includes('chassis')) {
+                                        // Make body bright orange/copper like reference
+                                        child.material.color = new THREE.Color(0xff8844);
+                                        child.material.emissive = new THREE.Color(0x441100);
+                                        child.material.emissiveIntensity = 0.6;
+                                    } else if (name.includes('wheel') || name.includes('rim')) {
+                                        // Keep wheels darker but still reflective
+                                        child.material.color = new THREE.Color(0x333333);
+                                        child.material.metalness = 0.9;
+                                        child.material.roughness = 0.1;
+                                    } else if (name.includes('glass') || name.includes('window')) {
+                                        // Make glass more transparent and reflective
+                                        child.material.transparent = true;
+                                        child.material.opacity = 0.3;
+                                        child.material.metalness = 0.1;
+                                        child.material.roughness = 0.0;
+                                    }
                                 }
                             }
                             
@@ -557,12 +614,28 @@ class Lamborghini3D {
             }
         }
         
-        // Animate lights for extra effects
+        // Enhanced dynamic lighting effects
         if (this.lights && !this.drivingMode) {
             const time = Date.now() * 0.001;
-            this.lights.accent.intensity = 3 + Math.sin(time * 2) * 0.5;
-            this.lights.rim.intensity = 2 + Math.sin(time * 3) * 0.3;
-            this.lights.under.intensity = 1.5 + Math.sin(time * 4) * 0.2;
+            
+            // Main accent lights with stronger pulsing
+            this.lights.accent.intensity = 5 + Math.sin(time * 2) * 2;
+            this.lights.rim.intensity = 4 + Math.sin(time * 3) * 1.5;
+            this.lights.under.intensity = 4 + Math.sin(time * 4) * 1;
+            
+            // Colorful accent lights with rotation and pulsing
+            this.lights.pink.intensity = 3 + Math.sin(time * 2.5) * 1;
+            this.lights.green.intensity = 3 + Math.sin(time * 1.8) * 1;
+            
+            // Rotate colorful lights around the car
+            const radius = 8;
+            this.lights.pink.position.x = Math.cos(time * 0.5) * radius;
+            this.lights.pink.position.z = Math.sin(time * 0.5) * radius;
+            this.lights.green.position.x = Math.cos(time * 0.5 + Math.PI) * radius;
+            this.lights.green.position.z = Math.sin(time * 0.5 + Math.PI) * radius;
+            
+            // Front light intensity variation
+            this.lights.front.intensity = 4 + Math.sin(time * 4) * 1;
         }
         
         // Update particle system
