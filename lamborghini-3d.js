@@ -288,9 +288,24 @@ class Lamborghini3D {
         // Show loading indicator
         loadingIndicator.style.display = 'block';
         
+        // Test if model file is accessible
+        fetch('./models/lamborghini_venevo.glb')
+            .then(response => {
+                console.log('Model file fetch response:', response.status, response.statusText);
+                if (!response.ok) {
+                    console.error('Model file not accessible:', response.status, response.statusText);
+                }
+            })
+            .catch(error => {
+                console.error('Model file fetch error:', error);
+            });
+        
+        console.log('Starting to load Lamborghini model from:', './models/lamborghini_venevo.glb');
+        
         loader.load(
             './models/lamborghini_venevo.glb', // Your Lamborghini Veneno model
             (gltf) => {
+                console.log('Lamborghini model loaded successfully:', gltf);
                 this.car = gltf.scene;
                 
                 // Scale and position the car
@@ -407,14 +422,19 @@ class Lamborghini3D {
             },
             (error) => {
                 console.error('Error loading Lamborghini model:', error);
+                console.error('Model path attempted:', './models/lamborghini_venevo.glb');
+                console.error('Current URL:', window.location.href);
+                
                 const loadingText = document.querySelector('.loading-indicator p');
                 if (loadingText) {
-                    loadingText.textContent = 'Error loading model. Using fallback...';
+                    loadingText.textContent = 'Model failed to load. Creating fallback car...';
                 }
                 
                 // Create a fallback 3D car if model fails to load
                 this.createFallbackCar();
-                loadingIndicator.style.display = 'none';
+                if (loadingIndicator) {
+                    loadingIndicator.style.display = 'none';
+                }
             }
         );
     }
@@ -725,9 +745,12 @@ class LamborghiniDriving extends Lamborghini3D {
             loadingIndicator.style.display = 'block';
         }
         
+        console.log('Starting to load DRIVING Lamborghini model from:', './models/lamborghini_venevo.glb');
+        
         loader.load(
             './models/lamborghini_venevo.glb',
             (gltf) => {
+                console.log('DRIVING Lamborghini model loaded successfully:', gltf);
                 this.car = gltf.scene;
                 
                 // Scale and position for driving section
@@ -795,7 +818,15 @@ class LamborghiniDriving extends Lamborghini3D {
                 }
             },
             (error) => {
-                console.error('Error loading driving Lamborghini model:', error);
+                console.error('Error loading DRIVING Lamborghini model:', error);
+                console.error('DRIVING Model path attempted:', './models/lamborghini_venevo.glb');
+                console.error('DRIVING Current URL:', window.location.href);
+                
+                const loadingText = document.querySelector(`#${this.loadingId} p`);
+                if (loadingText) {
+                    loadingText.textContent = 'Model failed to load. Creating fallback car...';
+                }
+                
                 this.createFallbackCar();
                 if (loadingIndicator) {
                     loadingIndicator.style.display = 'none';
