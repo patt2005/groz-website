@@ -383,7 +383,7 @@
         // ANIME.JS SCROLL-TRIGGERED DIAGONAL ANIMATION
         console.log('Checking anime object:', typeof anime, anime);
         
-        if (typeof anime !== 'undefined' && anime.timeline) {
+        if (typeof anime !== 'undefined' && typeof anime === 'function') {
             console.log('✅ Anime.js library loaded correctly');
             
             // Get the driving section for scroll trigger
