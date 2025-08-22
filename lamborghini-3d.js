@@ -177,7 +177,7 @@ class Lamborghini3D {
         this.renderer.shadowMap.enabled = true;
         this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
         this.renderer.toneMapping = THREE.LinearToneMapping;
-        this.renderer.toneMappingExposure = 2.5; // Much higher exposure for brightness
+        this.renderer.toneMappingExposure = 4.0; // Much higher exposure for brightness
         this.renderer.outputEncoding = THREE.sRGBEncoding;
         this.renderer.physicallyCorrectLights = false; // Disable for more dramatic lighting
         
@@ -188,11 +188,11 @@ class Lamborghini3D {
     
     setupLights() {
         // Much brighter ambient light for overall illumination
-        const ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
+        const ambientLight = new THREE.AmbientLight(0xffffff, 2.5);
         this.scene.add(ambientLight);
         
         // Very bright main directional light
-        const directionalLight = new THREE.DirectionalLight(0xffffff, 3.0);
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 5.0);
         directionalLight.position.set(10, 10, 5);
         directionalLight.castShadow = true;
         directionalLight.shadow.mapSize.width = 2048;
@@ -207,11 +207,11 @@ class Lamborghini3D {
         this.scene.add(directionalLight);
         
         // Additional directional lights for even coverage
-        const directionalLight2 = new THREE.DirectionalLight(0xffffff, 2.0);
+        const directionalLight2 = new THREE.DirectionalLight(0xffffff, 4.0);
         directionalLight2.position.set(-10, 8, -5);
         this.scene.add(directionalLight2);
         
-        const directionalLight3 = new THREE.DirectionalLight(0xffffff, 1.5);
+        const directionalLight3 = new THREE.DirectionalLight(0xffffff, 3.0);
         directionalLight3.position.set(0, -5, 10);
         this.scene.add(directionalLight3);
         
