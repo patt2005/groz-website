@@ -863,18 +863,84 @@ model-viewer {
     animation: driveDiagonally 8s ease-in-out infinite;
 }
 
-/* CSS Lamborghini emoji styling for guaranteed visibility */
-.css-lamborghini {
-    font-size: 60px;
-    text-align: center;
-    line-height: 80px;
-    filter: drop-shadow(0 5px 15px rgba(255, 107, 53, 0.7));
-    animation: carBounce 0.5s ease-in-out infinite alternate;
+/* Visible CSS Lamborghini - guaranteed to show */
+.visible-lamborghini {
+    position: relative;
+    width: 120px;
+    height: 50px;
+    transform-style: preserve-3d;
 }
 
-@keyframes carBounce {
-    0% { transform: translateY(0px) rotateZ(-2deg); }
-    100% { transform: translateY(-5px) rotateZ(2deg); }
+.car-body {
+    width: 120px;
+    height: 40px;
+    background: linear-gradient(45deg, #ff6b35 0%, #ff8844 50%, #ffaa55 100%);
+    border-radius: 20px 8px 8px 20px;
+    position: relative;
+    box-shadow: 0 5px 20px rgba(255, 107, 53, 0.6);
+    animation: engineGlow 1s ease-in-out infinite alternate;
+}
+
+.car-body::before {
+    content: '';
+    position: absolute;
+    top: -15px;
+    left: 30px;
+    width: 60px;
+    height: 25px;
+    background: linear-gradient(45deg, #cc5522 0%, #ff7733 100%);
+    border-radius: 15px 5px 5px 15px;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.wheel {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: radial-gradient(circle, #333 40%, #666 70%, #999 100%);
+    border-radius: 50%;
+    border: 2px solid #222;
+    animation: wheelSpin 0.3s linear infinite;
+}
+
+.wheel-1 { bottom: -10px; left: 10px; }
+.wheel-2 { bottom: -10px; right: 10px; }
+.wheel-3 { bottom: -10px; left: 25px; }
+.wheel-4 { bottom: -10px; right: 25px; }
+
+.headlight {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: radial-gradient(circle, #ffffff 0%, #ffff88 100%);
+    border-radius: 50%;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
+    top: 15px;
+    animation: headlightFlicker 1.5s ease-in-out infinite alternate;
+}
+
+.headlight:first-child { right: 5px; }
+.headlight:last-child { right: 5px; top: 25px; }
+
+@keyframes engineGlow {
+    0% { 
+        box-shadow: 0 5px 20px rgba(255, 107, 53, 0.6);
+        filter: brightness(1.0);
+    }
+    100% { 
+        box-shadow: 0 5px 30px rgba(255, 107, 53, 1.0);
+        filter: brightness(1.2);
+    }
+}
+
+@keyframes wheelSpin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes headlightFlicker {
+    0% { opacity: 0.8; box-shadow: 0 0 15px rgba(255, 255, 255, 0.8); }
+    100% { opacity: 1.0; box-shadow: 0 0 25px rgba(255, 255, 255, 1.0); }
 }
 
 #driving-3d-canvas {
