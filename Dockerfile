@@ -1,0 +1,74 @@
+# Use Nginx as base image for serving static files
+FROM nginx:alpine
+
+# Set working directory
+WORKDIR /usr/share/nginx/html
+
+# Copy website files to nginx html directory
+COPY index.html .
+COPY styles.css .
+COPY script.js .
+COPY lamborghini-3d.js .
+COPY models/ ./models/
+
+# Create custom nginx configuration for SPA routing
+COPY <<EOF /etc/nginx/conf.d/default.conf
+server {
+    listen 8080;
+    server_name localhost;
+    root /usr/share/nginx/html;
+    index index.html;
+
+    # Enable gzip compression
+    gzip on;
+    gzip_vary on;
+    gzip_min_length 1024;
+    gzip_types text/plain text/css text/xml text/javascript application/javascript application/xml+rss application/json;
+
+    # Security headers
+    add_header X-Frame-Options "SAMEORIGIN" always;
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header X-XSS-Protection "1; mode=block" always;
+
+    # Handle GLB files with correct MIME type
+    location ~* \\.glb$ {
+        add_header Content-Type "model/gltf-binary";
+        add_header Access-Control-Allow-Origin "*";
+        add_header Access-Control-Allow-Methods "GET, POST, OPTIONS";
+        add_header Access-Control-Allow-Headers "DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range";
+        expires 1y;
+    }
+
+    # Handle 3D model files
+    location /models/ {
+        add_header Access-Control-Allow-Origin "*";
+        add_header Access-Control-Allow-Methods "GET, POST, OPTIONS";
+        add_header Access-Control-Allow-Headers "DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range";
+        expires 1y;
+    }
+
+    # Handle static assets
+    location ~* \.(css|js|png|jpg|jpeg|gif|ico|svg)$ {
+        expires 1y;
+        add_header Cache-Control "public, immutable";
+    }
+
+    # Handle SPA routing
+    location / {
+        try_files \$uri \$uri/ /index.html;
+    }
+
+    # Health check endpoint
+    location /health {
+        access_log off;
+        return 200 "healthy\\n";
+        add_header Content-Type text/plain;
+    }
+}
+EOF
+
+# Expose port 8080 (Cloud Run requirement)
+EXPOSE 8080
+
+# Start nginx
+CMD ["nginx", "-g", "daemon off;"]

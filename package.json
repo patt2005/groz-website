@@ -1,0 +1,33 @@
+{
+  "name": "groz-apps-website",
+  "version": "1.0.0",
+  "description": "GROZ APPS - Premium App Development Solutions Website",
+  "main": "index.html",
+  "scripts": {
+    "start": "python3 -m http.server 8080",
+    "dev": "python3 -m http.server 3000",
+    "build": "echo 'Static website - no build step required'",
+    "docker:build": "docker build -t groz-apps-website .",
+    "docker:run": "docker run -p 8080:8080 groz-apps-website",
+    "docker:compose": "docker-compose up",
+    "deploy": "gcloud builds submit --config cloudbuild.yaml"
+  },
+  "keywords": [
+    "groz-apps",
+    "mobile-development",
+    "app-development",
+    "lamborghini",
+    "3d-website"
+  ],
+  "author": "GROZ APPS",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/groz-apps-website.git"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
