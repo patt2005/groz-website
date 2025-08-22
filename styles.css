@@ -812,12 +812,11 @@ model-viewer {
 .car-container-3d {
     position: absolute;
     left: -200px;
-    top: 50%;
+    top: 60%;
     transform: translateY(-50%);
     width: 150px;
     height: 80px;
     z-index: 10;
-    animation: driveAcrossScreen 8s linear infinite;
 }
 
 /* Make sure the driving Lamborghini looks like it's on the road */
