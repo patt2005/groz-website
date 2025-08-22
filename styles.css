@@ -810,36 +810,51 @@ model-viewer {
 
 /* Driving Animation Section - 3D Car */
 .car-container-3d {
-    position: absolute;
-    left: 10%;
-    top: 60%;
-    transform: translateY(-50%);
+    position: fixed;
+    left: -200px;
+    top: 80vh;
     width: 150px;
     height: 80px;
-    z-index: 10;
+    z-index: 1000;
     --animate-duration: 4s;
 }
 
-/* Diagonal driving animation across the screen */
+/* Diagonal driving animation across the entire screen */
 @keyframes driveDiagonally {
     0% {
-        transform: translate(-200px, 80vh) rotateZ(-30deg) scale(0.7);
+        left: -200px;
+        top: 90vh;
+        transform: rotateZ(-25deg) scale(0.8);
         opacity: 0;
     }
-    15% {
+    10% {
         opacity: 1;
-        transform: translate(10vw, 60vh) rotateZ(-15deg) scale(0.9);
+    }
+    25% {
+        left: 25vw;
+        top: 70vh;
+        transform: rotateZ(-10deg) scale(1.0);
+        opacity: 1;
     }
     50% {
-        transform: translate(50vw, 30vh) rotateZ(0deg) scale(1.1);
+        left: 50vw;
+        top: 50vh;
+        transform: rotateZ(0deg) scale(1.2);
         opacity: 1;
     }
-    85% {
+    75% {
+        left: 75vw;
+        top: 30vh;
+        transform: rotateZ(10deg) scale(1.0);
         opacity: 1;
-        transform: translate(90vw, 10vh) rotateZ(15deg) scale(0.9);
+    }
+    90% {
+        opacity: 1;
     }
     100% {
-        transform: translate(calc(100vw + 200px), -20vh) rotateZ(30deg) scale(0.7);
+        left: calc(100vw + 200px);
+        top: 10vh;
+        transform: rotateZ(25deg) scale(0.8);
         opacity: 0;
     }
 }
