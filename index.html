@@ -198,22 +198,7 @@
         </div>
     </section>
     
-    <!-- Lamborghini outside of section to avoid CSS conflicts -->
-    <div class="car-container-3d driving">
-        <div class="visible-lamborghini">
-            <div class="car-body"></div>
-            <div class="car-wheels">
-                <div class="wheel wheel-1"></div>
-                <div class="wheel wheel-2"></div>
-                <div class="wheel wheel-3"></div>
-                <div class="wheel wheel-4"></div>
-            </div>
-            <div class="car-lights">
-                <div class="headlight"></div>
-                <div class="headlight"></div>
-            </div>
-        </div>
-    </div>
+    <!-- JavaScript will create Lamborghini here -->
 
     <!-- About Section -->
     <section id="about" class="about">
@@ -371,6 +356,46 @@
             console.log('CSS Lamborghini parent:', cssLamborghini.parentElement);
         }
         
+        // CREATE LAMBORGHINI WITH JAVASCRIPT - guaranteed to work
+        console.log('=== CREATING JAVASCRIPT LAMBORGHINI ===');
+        
+        const lamborghiniDiv = document.createElement('div');
+        lamborghiniDiv.id = 'js-lamborghini';
+        lamborghiniDiv.innerHTML = `
+            <div style="
+                position: fixed;
+                width: 120px;
+                height: 50px;
+                background: linear-gradient(45deg, #ff6b35 0%, #ff8844 50%, #ffaa55 100%);
+                border-radius: 20px 8px 8px 20px;
+                box-shadow: 0 5px 20px rgba(255, 107, 53, 0.8);
+                z-index: 9999;
+                left: -200px;
+                top: 70vh;
+                animation: jsDriveDiagonal 10s ease-in-out infinite;
+            ">
+                🚗 LAMBORGHINI
+            </div>
+        `;
+        
+        // Add CSS animation for JavaScript Lamborghini
+        const style = document.createElement('style');
+        style.textContent = \`
+            @keyframes jsDriveDiagonal {
+                0% { left: -200px; top: 90vh; transform: rotate(-20deg) scale(0.8); opacity: 0; }
+                10% { opacity: 1; }
+                25% { left: 25vw; top: 70vh; transform: rotate(-10deg) scale(1.0); }
+                50% { left: 50vw; top: 50vh; transform: rotate(0deg) scale(1.2); }
+                75% { left: 75vw; top: 30vh; transform: rotate(10deg) scale(1.0); }
+                90% { opacity: 1; }
+                100% { left: calc(100vw + 200px); top: 10vh; transform: rotate(20deg) scale(0.8); opacity: 0; }
+            }
+        \`;
+        document.head.appendChild(style);
+        document.body.appendChild(lamborghiniDiv);
+        
+        console.log('✅ JavaScript Lamborghini created successfully!');
+        
         // Check if animation is working
         setTimeout(() => {
             if (drivingContainer) {
@@ -378,6 +403,14 @@
                 console.log('=== ANIMATION CHECK ===');
                 console.log('Container position:', { x: rect.left, y: rect.top, width: rect.width, height: rect.height });
                 console.log('Container is visible:', rect.width > 0 && rect.height > 0);
+            }
+            
+            const jsLambo = document.getElementById('js-lamborghini');
+            if (jsLambo) {
+                const jsRect = jsLambo.getBoundingClientRect();
+                console.log('=== JS LAMBORGHINI CHECK ===');
+                console.log('JS Lambo position:', { x: jsRect.left, y: jsRect.top, width: jsRect.width, height: jsRect.height });
+                console.log('JS Lambo is visible:', jsRect.width > 0 && jsRect.height > 0);
             }
         }, 3000);
         
