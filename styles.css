@@ -810,31 +810,35 @@ model-viewer {
 
 /* Driving Animation Section - 3D Car */
 .car-container-3d {
-    position: fixed;
-    left: -200px;
-    top: 80vh;
-    width: 150px;
-    height: 80px;
-    z-index: 1000;
-    --animate-duration: 4s;
+    position: fixed !important;
+    left: -200px !important;
+    top: 80vh !important;
+    width: 150px !important;
+    height: 80px !important;
+    z-index: 1000 !important;
+    display: block !important;
+    visibility: visible !important;
+    background: rgba(255, 0, 0, 0.3) !important; /* Temporary red background to see it */
 }
 
 /* Desktop/Laptop specific positioning */
 @media (min-width: 768px) {
     .car-container-3d {
-        width: 200px;
-        height: 100px;
-        top: 70vh;
+        width: 200px !important;
+        height: 100px !important;
+        top: 70vh !important;
     }
     
     .visible-lamborghini {
-        width: 160px;
-        height: 70px;
+        width: 160px !important;
+        height: 70px !important;
+        display: block !important;
     }
     
     .car-body {
-        width: 160px;
-        height: 50px;
+        width: 160px !important;
+        height: 50px !important;
+        display: block !important;
     }
 }
 
@@ -897,20 +901,23 @@ model-viewer {
 
 /* Visible CSS Lamborghini - guaranteed to show */
 .visible-lamborghini {
-    position: relative;
-    width: 120px;
-    height: 50px;
-    transform-style: preserve-3d;
+    position: relative !important;
+    width: 120px !important;
+    height: 50px !important;
+    display: block !important;
+    visibility: visible !important;
 }
 
 .car-body {
-    width: 120px;
-    height: 40px;
-    background: linear-gradient(45deg, #ff6b35 0%, #ff8844 50%, #ffaa55 100%);
-    border-radius: 20px 8px 8px 20px;
-    position: relative;
-    box-shadow: 0 5px 20px rgba(255, 107, 53, 0.6);
-    animation: engineGlow 1s ease-in-out infinite alternate;
+    width: 120px !important;
+    height: 40px !important;
+    background: linear-gradient(45deg, #ff6b35 0%, #ff8844 50%, #ffaa55 100%) !important;
+    border-radius: 20px 8px 8px 20px !important;
+    position: relative !important;
+    box-shadow: 0 5px 20px rgba(255, 107, 53, 0.6) !important;
+    animation: engineGlow 1s ease-in-out infinite alternate !important;
+    display: block !important;
+    visibility: visible !important;
 }
 
 .car-body::before {
