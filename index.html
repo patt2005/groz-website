@@ -381,68 +381,67 @@
         console.log('✅ Anime.js Lamborghini created successfully!');
         
         // ANIME.JS SCROLL-TRIGGERED DIAGONAL ANIMATION
-        if (typeof anime !== 'undefined') {
-            console.log('✅ Anime.js library loaded');
+        console.log('Checking anime object:', typeof anime, anime);
+        
+        if (typeof anime !== 'undefined' && anime.timeline) {
+            console.log('✅ Anime.js library loaded correctly');
             
             // Get the driving section for scroll trigger
             const drivingSection = document.querySelector('.driving-animation');
             
-            // Create scroll-triggered animation
-            const scrollAnimation = anime({
-                targets: '#anime-lamborghini',
-                left: [
-                    { value: -200, duration: 0 },
-                    { value: '15vw', duration: 1500 },
-                    { value: '35vw', duration: 1500 },
-                    { value: '55vw', duration: 1500 },
-                    { value: '75vw', duration: 1500 },
-                    { value: 'calc(100vw + 200px)', duration: 1000 }
-                ],
-                top: [
-                    { value: '95vh', duration: 0 },
-                    { value: '75vh', duration: 1500 },
-                    { value: '55vh', duration: 1500 },
-                    { value: '35vh', duration: 1500 },
-                    { value: '15vh', duration: 1500 },
-                    { value: '5vh', duration: 1000 }
-                ],
-                rotate: [
-                    { value: -25, duration: 0 },
-                    { value: -15, duration: 1500 },
-                    { value: -5, duration: 1500 },
-                    { value: 5, duration: 1500 },
-                    { value: 15, duration: 1500 },
-                    { value: 25, duration: 1000 }
-                ],
-                scale: [
-                    { value: 0.7, duration: 0 },
-                    { value: 0.9, duration: 1500 },
-                    { value: 1.1, duration: 1500 },
-                    { value: 1.4, duration: 1500 },
-                    { value: 1.0, duration: 1500 },
-                    { value: 0.7, duration: 1000 }
-                ],
-                opacity: [
-                    { value: 0, duration: 0 },
-                    { value: 1, duration: 300 },
-                    { value: 1, duration: 5700 },
-                    { value: 0, duration: 300 }
-                ],
-                easing: 'easeInOutCubic',
-                duration: 7500,
-                loop: true,
-                autoplay: false // We'll control when it starts
-            });
+            // Simple anime animation - basic syntax
+            function startDiagonalAnimation() {
+                anime({
+                    targets: '#anime-lamborghini',
+                    translateX: [
+                        { value: 0, duration: 0 },
+                        { value: '25vw', duration: 2000 },
+                        { value: '50vw', duration: 2000 },
+                        { value: '75vw', duration: 2000 },
+                        { value: '100vw', duration: 2000 }
+                    ],
+                    translateY: [
+                        { value: 0, duration: 0 },
+                        { value: '-20vh', duration: 2000 },
+                        { value: '-40vh', duration: 2000 },
+                        { value: '-60vh', duration: 2000 },
+                        { value: '-80vh', duration: 2000 }
+                    ],
+                    rotate: [
+                        { value: -20, duration: 0 },
+                        { value: -10, duration: 2000 },
+                        { value: 0, duration: 2000 },
+                        { value: 10, duration: 2000 },
+                        { value: 20, duration: 2000 }
+                    ],
+                    scale: [
+                        { value: 0.8, duration: 0 },
+                        { value: 1.0, duration: 2000 },
+                        { value: 1.3, duration: 2000 },
+                        { value: 1.0, duration: 2000 },
+                        { value: 0.8, duration: 2000 }
+                    ],
+                    opacity: [
+                        { value: 0, duration: 0 },
+                        { value: 1, duration: 500 },
+                        { value: 1, duration: 6500 },
+                        { value: 0, duration: 500 }
+                    ],
+                    easing: 'easeInOutQuad',
+                    duration: 8000,
+                    loop: true,
+                    complete: function() {
+                        console.log('🔄 Animation cycle completed');
+                    }
+                });
+            }
             
             // Start animation when section comes into view
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach((entry) => {
                     if (entry.isIntersecting) {
                         console.log('🎯 Driving section in view - starting Lamborghini animation!');
-                        scrollAnimation.play();
-                    } else {
-                        console.log('📴 Driving section out of view - pausing animation');
-                        scrollAnimation.pause();
+                        startDiagonalAnimation();
                     }
                 });
             }, { threshold: 0.3 });
@@ -450,6 +449,10 @@
             if (drivingSection) {
                 observer.observe(drivingSection);
                 console.log('✅ Scroll observer attached to driving section');
+            } else {
+                // If no section found, start animation immediately
+                console.log('⚡ Starting animation immediately');
+                startDiagonalAnimation();
             }
             
             console.log('✅ Anime.js scroll-triggered animation ready!');
