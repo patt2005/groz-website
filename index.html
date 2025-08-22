@@ -7,8 +7,7 @@
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <!-- Model Viewer for 3D models -->
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
     
@@ -58,7 +57,7 @@
                 </div>
             </div>
             <div class="hero-visual">
-                <div class="car-3d-container">
+                <div class="car-3d-container animate__animated animate__zoomIn animate__delay-1s">
                     <model-viewer 
                         id="hero-lamborghini"
                         src="./models/2012_lamborghini_aventador.glb"
@@ -66,7 +65,7 @@
                         auto-rotate
                         camera-controls
                         shadow-intensity="2"
-                        exposure="2.0"
+                        exposure="3.0"
                         tone-mapping="aces"
                         environment-image="neutral"
                         loading="eager"
@@ -75,7 +74,8 @@
                         camera-orbit="45deg 75deg 8m"
                         min-camera-orbit="auto 10deg auto"
                         max-camera-orbit="auto 160deg auto"
-                        interaction-policy="allow-when-focused">
+                        interaction-policy="allow-when-focused"
+                        class="animate__animated animate__pulse animate__infinite animate__slow">
                         
                         <div class="loading-indicator" slot="poster">
                             <div class="spinner"></div>
@@ -189,13 +189,13 @@
     <!-- Animation Section -->
     <section class="driving-animation">
         <div class="road">
-            <div class="car-container-3d">
+            <div class="car-container-3d driving">
                 <model-viewer 
                     id="driving-lamborghini"
                     src="./models/2012_lamborghini_aventador.glb"
                     alt="Lamborghini Aventador Driving on Road"
                     shadow-intensity="2"
-                    exposure="2.5"
+                    exposure="3.0"
                     tone-mapping="aces"
                     environment-image="neutral"
                     loading="eager"
@@ -204,7 +204,8 @@
                     camera-orbit="45deg 75deg 5m"
                     field-of-view="45deg"
                     interaction-policy="never"
-                    disable-zoom>
+                    disable-zoom
+                    class="animate__animated animate__pulse animate__infinite">
                         
                     <div class="loading-indicator" slot="poster">
                         <div class="spinner"></div>

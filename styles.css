@@ -811,12 +811,39 @@ model-viewer {
 /* Driving Animation Section - 3D Car */
 .car-container-3d {
     position: absolute;
-    left: -200px;
+    left: 10%;
     top: 60%;
     transform: translateY(-50%);
     width: 150px;
     height: 80px;
     z-index: 10;
+    --animate-duration: 4s;
+}
+
+/* Custom cross-screen driving animation using Animate.css principles */
+@keyframes driveAcrossScreen {
+    0% {
+        transform: translateX(-100vw) translateY(-50%);
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+    }
+    50% {
+        transform: translateX(50vw) translateY(-60%);
+        opacity: 1;
+    }
+    90% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateX(150vw) translateY(-50%);
+        opacity: 0;
+    }
+}
+
+.car-container-3d.driving {
+    animation: driveAcrossScreen 6s ease-in-out infinite;
 }
 
 /* Make sure the driving Lamborghini looks like it's on the road */

@@ -331,99 +331,16 @@ document.addEventListener('DOMContentLoaded', function() {
     const drivingAnimation = new DrivingAnimation();
     const particleSystem = new ParticleSystem();
     
-    // Advanced GSAP driving animation inspired by Traffic Devils
-    gsap.registerPlugin(ScrollTrigger);
-    
+    // Simple Animate.css driving effect
     const drivingLamborghini = document.getElementById('driving-lamborghini');
-    const drivingContainer = document.querySelector('.car-container-3d');
     
-    if (drivingLamborghini && drivingContainer) {
-        // Create a timeline for the driving animation
-        const drivingTimeline = gsap.timeline({
-            repeat: -1,
-            duration: 10
-        });
-        
-        // Advanced driving path - drives across entire screen
-        drivingTimeline
-            .set(drivingContainer, { 
-                left: '-200px',
-                top: '60%',
-                scale: 0.8,
-                rotation: 0
-            })
-            .to(drivingContainer, {
-                left: '20%',
-                duration: 2,
-                ease: "power2.out",
-                onUpdate: function() {
-                    // Add engine vibration while accelerating
-                    gsap.set(drivingLamborghini, {
-                        y: Math.sin(this.progress() * 50) * 3,
-                        rotationZ: Math.sin(this.progress() * 30) * 2
-                    });
-                }
-            })
-            .to(drivingContainer, {
-                left: '50%',
-                top: '55%',
-                scale: 1.0,
-                duration: 2,
-                ease: "power1.inOut",
-                onUpdate: function() {
-                    // Smooth cruise in middle
-                    gsap.set(drivingLamborghini, {
-                        y: Math.sin(this.progress() * 20) * 2,
-                        rotationZ: Math.sin(this.progress() * 15) * 1
-                    });
-                }
-            })
-            .to(drivingContainer, {
-                left: '80%',
-                top: '65%',
-                scale: 0.9,
-                duration: 2,
-                ease: "power1.inOut"
-            })
-            .to(drivingContainer, {
-                left: 'calc(100% + 200px)',
-                duration: 2,
-                ease: "power2.in",
-                onUpdate: function() {
-                    // Add acceleration effects
-                    gsap.set(drivingLamborghini, {
-                        y: Math.sin(this.progress() * 40) * 4,
-                        rotationZ: Math.sin(this.progress() * 25) * 3
-                    });
-                }
-            })
-            .to(drivingContainer, {
-                left: '-200px',
-                duration: 0.1 // Instant reset to start
-            });
-            
-        // Trigger animation when section is in view
-        ScrollTrigger.create({
-            trigger: '.driving-animation',
-            start: 'top bottom',
-            end: 'bottom top',
-            onEnter: () => drivingTimeline.play(),
-            onLeave: () => drivingTimeline.pause(),
-            onEnterBack: () => drivingTimeline.play(),
-            onLeaveBack: () => drivingTimeline.pause()
-        });
-        
-        // Add lighting effects during driving
-        gsap.to('#driving-lamborghini', {
-            duration: 2,
-            repeat: -1,
-            yoyo: true,
-            ease: "sine.inOut",
-            onUpdate: function() {
-                const exposure = 2.5 + Math.sin(this.progress() * Math.PI) * 1.5;
-                drivingLamborghini.setAttribute('exposure', exposure);
-            }
-        });
+    if (drivingLamborghini) {
+        // Add pulsing light effect to the model viewer
+        setInterval(() => {
+            const currentExposure = parseFloat(drivingLamborghini.getAttribute('exposure') || '3.0');
+            const newExposure = currentExposure === 3.0 ? 4.5 : 3.0;
+            drivingLamborghini.setAttribute('exposure', newExposure);
+        }, 1500);
     }
     
     // Start counter animation when stats section is visible
