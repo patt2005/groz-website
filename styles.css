@@ -820,30 +820,32 @@ model-viewer {
     --animate-duration: 4s;
 }
 
-/* Custom cross-screen driving animation using Animate.css principles */
-@keyframes driveAcrossScreen {
+/* Diagonal driving animation across the screen */
+@keyframes driveDiagonally {
     0% {
-        transform: translateX(-100vw) translateY(-50%);
+        transform: translate(-200px, 80vh) rotateZ(-30deg) scale(0.7);
         opacity: 0;
     }
-    10% {
+    15% {
         opacity: 1;
+        transform: translate(10vw, 60vh) rotateZ(-15deg) scale(0.9);
     }
     50% {
-        transform: translateX(50vw) translateY(-60%);
+        transform: translate(50vw, 30vh) rotateZ(0deg) scale(1.1);
         opacity: 1;
     }
-    90% {
+    85% {
         opacity: 1;
+        transform: translate(90vw, 10vh) rotateZ(15deg) scale(0.9);
     }
     100% {
-        transform: translateX(150vw) translateY(-50%);
+        transform: translate(calc(100vw + 200px), -20vh) rotateZ(30deg) scale(0.7);
         opacity: 0;
     }
 }
 
 .car-container-3d.driving {
-    animation: driveAcrossScreen 6s ease-in-out infinite;
+    animation: driveDiagonally 8s ease-in-out infinite;
 }
 
 /* Make sure the driving Lamborghini looks like it's on the road */
