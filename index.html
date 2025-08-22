@@ -7,6 +7,9 @@
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Model Viewer for 3D models -->
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
+    
     <script type="importmap">
     {
       "imports": {
@@ -54,17 +57,35 @@
             </div>
             <div class="hero-visual">
                 <div class="car-3d-container">
-                    <canvas id="hero-3d-canvas"></canvas>
-                    <div class="loading-indicator">
-                        <div class="spinner"></div>
-                        <p>Loading Lamborghini...</p>
-                    </div>
+                    <model-viewer 
+                        id="hero-lamborghini"
+                        src="./models/2012_lamborghini_aventador.glb"
+                        alt="Lamborghini Aventador 3D Model"
+                        auto-rotate
+                        camera-controls
+                        shadow-intensity="2"
+                        exposure="2.0"
+                        tone-mapping="aces"
+                        environment-image="neutral"
+                        loading="eager"
+                        reveal="auto"
+                        style="width: 100%; height: 100%; background-color: transparent;"
+                        camera-orbit="45deg 75deg 8m"
+                        min-camera-orbit="auto 10deg auto"
+                        max-camera-orbit="auto 160deg auto"
+                        interaction-policy="allow-when-focused">
+                        
+                        <div class="loading-indicator" slot="poster">
+                            <div class="spinner"></div>
+                            <p>Loading Lamborghini Aventador...</p>
+                        </div>
+                    </model-viewer>
                 </div>
                 <div class="road-lines-3d"></div>
                 <div class="car-controls">
-                    <button class="car-control-btn" data-action="rotate">🔄</button>
-                    <button class="car-control-btn" data-action="lights">💡</button>
-                    <button class="car-control-btn" data-action="doors">🚪</button>
+                    <button class="car-control-btn" data-action="rotate" onclick="document.getElementById('hero-lamborghini').cameraOrbit = '45deg 75deg 8m'">🔄</button>
+                    <button class="car-control-btn" data-action="lights" onclick="document.getElementById('hero-lamborghini').exposure = document.getElementById('hero-lamborghini').exposure == 2.0 ? 4.0 : 2.0">💡</button>
+                    <button class="car-control-btn" data-action="doors" onclick="document.getElementById('hero-lamborghini').animationName = document.getElementById('hero-lamborghini').animationName ? '' : 'Take 001'">🚪</button>
                 </div>
             </div>
         </div>
@@ -167,11 +188,28 @@
     <section class="driving-animation">
         <div class="road">
             <div class="car-container-3d">
-                <canvas id="driving-3d-canvas"></canvas>
-                <div class="loading-indicator" id="driving-loading">
-                    <div class="spinner"></div>
-                    <p>Loading Lamborghini...</p>
-                </div>
+                <model-viewer 
+                    id="driving-lamborghini"
+                    src="./models/2012_lamborghini_aventador.glb"
+                    alt="Lamborghini Aventador Driving Animation"
+                    auto-rotate
+                    shadow-intensity="1.5"
+                    exposure="3.0"
+                    tone-mapping="aces"
+                    environment-image="neutral"
+                    loading="eager"
+                    reveal="auto"
+                    style="width: 100%; height: 100%; background-color: transparent;"
+                    camera-orbit="15deg 60deg 6m"
+                    auto-rotate-delay="0"
+                    rotation-per-second="30deg"
+                    interaction-policy="never">
+                        
+                    <div class="loading-indicator" slot="poster">
+                        <div class="spinner"></div>
+                        <p>Loading Driving Lamborghini...</p>
+                    </div>
+                </model-viewer>
             </div>
         </div>
         <div class="animation-content">
@@ -303,7 +341,6 @@
         </div>
     </footer>
 
-    <script type="module" src="lamborghini-3d.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
