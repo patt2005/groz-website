@@ -418,6 +418,158 @@
         document.body.appendChild(lamborghiniDiv);
         console.log('✅ Anime.js Lamborghini created successfully!');
         
+        // CREATE GEOMETRIC SHAPES WITH ANIME.JS
+        console.log('=== CREATING GEOMETRIC ANIMATIONS ===');
+        
+        // Create geometric container
+        const geometryContainer = document.createElement('div');
+        geometryContainer.id = 'geometry-container';
+        geometryContainer.style.cssText = `
+            position: fixed;
+            width: 100vw;
+            height: 100vh;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            pointer-events: none;
+        `;
+        
+        // Create geometric shapes
+        const shapes = [];
+        const colors = ['#ff6b35', '#00d4ff', '#ff69b4', '#00ff88', '#ffaa55', '#8844ff'];
+        const shapeTypes = ['circle', 'square', 'triangle', 'hexagon', 'diamond'];
+        
+        for (let i = 0; i < 15; i++) {
+            const shape = document.createElement('div');
+            shape.className = `geo-shape shape-${i}`;
+            const color = colors[i % colors.length];
+            const shapeType = shapeTypes[i % shapeTypes.length];
+            
+            let shapeStyle = '';
+            switch(shapeType) {
+                case 'circle':
+                    shapeStyle = `
+                        width: ${20 + Math.random() * 40}px;
+                        height: ${20 + Math.random() * 40}px;
+                        background: ${color};
+                        border-radius: 50%;
+                        box-shadow: 0 0 20px ${color}80;
+                    `;
+                    break;
+                case 'square':
+                    shapeStyle = `
+                        width: ${25 + Math.random() * 35}px;
+                        height: ${25 + Math.random() * 35}px;
+                        background: linear-gradient(45deg, ${color}, ${color}cc);
+                        border-radius: 8px;
+                        box-shadow: 0 0 15px ${color}60;
+                    `;
+                    break;
+                case 'triangle':
+                    const size = 15 + Math.random() * 25;
+                    shapeStyle = `
+                        width: 0;
+                        height: 0;
+                        border-left: ${size}px solid transparent;
+                        border-right: ${size}px solid transparent;
+                        border-bottom: ${size * 1.5}px solid ${color};
+                        filter: drop-shadow(0 0 10px ${color}80);
+                    `;
+                    break;
+                case 'hexagon':
+                    shapeStyle = `
+                        width: ${20 + Math.random() * 30}px;
+                        height: ${20 + Math.random() * 30}px;
+                        background: ${color};
+                        clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+                        box-shadow: 0 0 12px ${color}70;
+                    `;
+                    break;
+                case 'diamond':
+                    shapeStyle = `
+                        width: ${15 + Math.random() * 25}px;
+                        height: ${15 + Math.random() * 25}px;
+                        background: ${color};
+                        transform: rotate(45deg);
+                        border-radius: 4px;
+                        box-shadow: 0 0 18px ${color}90;
+                    `;
+                    break;
+            }
+            
+            shape.style.cssText = `
+                position: absolute;
+                ${shapeStyle}
+                left: ${Math.random() * 100}vw;
+                top: ${Math.random() * 100}vh;
+                opacity: 0.8;
+            `;
+            
+            geometryContainer.appendChild(shape);
+            shapes.push(shape);
+        }
+        
+        document.body.appendChild(geometryContainer);
+        console.log('✅ Geometric shapes created:', shapes.length);
+        
+        // ANIMATE GEOMETRIC SHAPES
+        setTimeout(() => {
+            if (typeof anime === 'function') {
+                // Floating animation for all shapes
+                anime({
+                    targets: '.geo-shape',
+                    translateY: [
+                        { value: '-30px', duration: 2000 },
+                        { value: '30px', duration: 2000 }
+                    ],
+                    rotate: [
+                        { value: '15deg', duration: 3000 },
+                        { value: '-15deg', duration: 3000 }
+                    ],
+                    scale: [
+                        { value: 1.2, duration: 1500 },
+                        { value: 0.8, duration: 1500 }
+                    ],
+                    opacity: [
+                        { value: 0.9, duration: 1000 },
+                        { value: 0.5, duration: 1000 }
+                    ],
+                    easing: 'easeInOutSine',
+                    loop: true,
+                    direction: 'alternate',
+                    delay: function(el, i) { return i * 100; }
+                });
+                
+                // Special animations for specific shapes
+                anime({
+                    targets: '.shape-0, .shape-5, .shape-10',
+                    translateX: [
+                        { value: '50px', duration: 4000 },
+                        { value: '-50px', duration: 4000 }
+                    ],
+                    easing: 'easeInOutCubic',
+                    loop: true,
+                    direction: 'alternate'
+                });
+                
+                // Pulsing animation for triangles and hexagons
+                anime({
+                    targets: '.shape-2, .shape-7, .shape-12',
+                    scale: [
+                        { value: 1.5, duration: 1000 },
+                        { value: 0.5, duration: 1000 }
+                    ],
+                    rotate: '1turn',
+                    easing: 'easeInOutBack',
+                    loop: true,
+                    direction: 'alternate',
+                    delay: 500
+                });
+                
+                console.log('✅ Geometric animations started with Anime.js!');
+            }
+        }, 1000);
+        
         // ANIME.JS TIMELINE FOR GLB MODEL DIAGONAL ANIMATION
         console.log('Checking anime object:', typeof anime, anime);
         
