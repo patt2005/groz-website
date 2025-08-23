@@ -360,22 +360,58 @@
         lamborghiniDiv.id = 'anime-lamborghini';
         lamborghiniDiv.style.cssText = `
             position: fixed;
-            width: 120px;
-            height: 50px;
-            background: linear-gradient(45deg, #ff6b35 0%, #ff8844 50%, #ffaa55 100%);
-            border-radius: 20px 8px 8px 20px;
-            box-shadow: 0 5px 20px rgba(255, 107, 53, 0.8);
+            width: 150px;
+            height: 80px;
             z-index: 9999;
             left: -200px;
             top: 70vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-            font-size: 12px;
         `;
-        lamborghiniDiv.textContent = '🚗 LAMBORGHINI';
+        
+        // Create model-viewer for the diagonal animation
+        const modelViewer = document.createElement('model-viewer');
+        modelViewer.setAttribute('src', './models/2012_lamborghini_aventador.glb');
+        modelViewer.setAttribute('alt', 'Lamborghini Diagonal Animation');
+        modelViewer.setAttribute('shadow-intensity', '2');
+        modelViewer.setAttribute('exposure', '4.0');
+        modelViewer.setAttribute('tone-mapping', 'aces');
+        modelViewer.setAttribute('environment-image', 'neutral');
+        modelViewer.setAttribute('loading', 'eager');
+        modelViewer.setAttribute('reveal', 'auto');
+        modelViewer.setAttribute('camera-orbit', '30deg 70deg 3m');
+        modelViewer.setAttribute('interaction-policy', 'never');
+        modelViewer.setAttribute('disable-zoom', '');
+        modelViewer.style.cssText = `
+            width: 100%;
+            height: 100%;
+            background-color: transparent;
+        `;
+        
+        lamborghiniDiv.appendChild(modelViewer);
+        
+        // Add loading indicator
+        const loadingDiv = document.createElement('div');
+        loadingDiv.style.cssText = `
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 12px;
+            text-align: center;
+        `;
+        loadingDiv.innerHTML = '🚗<br>Loading...';
+        modelViewer.appendChild(loadingDiv);
+        
+        // Hide loading when model loads
+        modelViewer.addEventListener('load', () => {
+            console.log('✅ Diagonal Lamborghini GLB loaded successfully!');
+            if (loadingDiv) loadingDiv.style.display = 'none';
+        });
+        
+        modelViewer.addEventListener('error', () => {
+            console.log('❌ Diagonal Lamborghini GLB failed - keeping loading text');
+            loadingDiv.innerHTML = '🚗<br>LAMBORGHINI';
+        });
         
         document.body.appendChild(lamborghiniDiv);
         console.log('✅ Anime.js Lamborghini created successfully!');
