@@ -582,34 +582,7 @@
                     ease: 'none'
                 });
                 
-                // FLOATING PARTICLES
-                for (let i = 0; i < 20; i++) {
-                    const particle = document.createElement('div');
-                    particle.style.cssText = `
-                        position: fixed;
-                        width: ${Math.random() * 10 + 5}px;
-                        height: ${Math.random() * 10 + 5}px;
-                        background: radial-gradient(circle, #ff6b35, #00d4ff);
-                        border-radius: 50%;
-                        pointer-events: none;
-                        z-index: 1000;
-                        left: ${Math.random() * 100}vw;
-                        top: ${Math.random() * 100}vh;
-                    `;
-                    document.body.appendChild(particle);
-                    
-                    gsap.to(particle, {
-                        x: 'random(-200, 200)',
-                        y: 'random(-200, 200)',
-                        rotation: 360,
-                        scale: 'random(0.5, 2)',
-                        opacity: 'random(0.3, 1)',
-                        duration: 'random(5, 15)',
-                        repeat: -1,
-                        yoyo: true,
-                        ease: 'sine.inOut'
-                    });
-                }
+                // Floating particles removed - too annoying
                 
                 console.log('🔥 INSANE ANIMATIONS ACTIVATED!');
             }
