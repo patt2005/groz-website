@@ -46,141 +46,69 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Advanced GSAP ScrollTrigger animations
     function initScrollAnimations() {
-        if (typeof gsap === 'undefined' || !gsap.registerPlugin) return;
+        console.log('🎯 === SCROLLTRIGGER DEBUG ===');
+        console.log('GSAP available:', typeof gsap);
+        console.log('ScrollTrigger available:', typeof ScrollTrigger);
+        
+        if (typeof gsap === 'undefined' || !gsap.registerPlugin) {
+            console.error('❌ GSAP not available for ScrollTrigger');
+            return;
+        }
         
         gsap.registerPlugin(ScrollTrigger);
+        console.log('✅ ScrollTrigger registered');
         
-        // Hero section with scrub effect
-        let heroTl = gsap.timeline({
-            scrollTrigger: {
-                trigger: '.hero',
-                start: 'top top',
-                end: 'bottom top',
-                scrub: 1,
-                pin: false,
-                onUpdate: self => {
-                    console.log('Hero scroll progress:', self.progress.toFixed(3));
-                }
-            }
-        });
+        // Simple test animation first
+        console.log('Testing basic ScrollTrigger...');
         
-        heroTl.addLabel('start')
-            .to('.hero-title', { y: -50, opacity: 0.3 })
-            .to('.hero-subtitle', { y: -30, opacity: 0.5 }, '<')
-            .to('.car-3d-container', { scale: 1.2, rotationY: 15 }, '<')
-            .addLabel('end');
+        const heroElement = document.querySelector('.hero');
+        const heroTitle = document.querySelector('.hero-title');
         
-        // Services section with advanced stagger
-        let servicesTl = gsap.timeline({
-            scrollTrigger: {
-                trigger: '.services-grid',
-                start: 'top 80%',
-                end: 'bottom 20%',
-                toggleActions: 'play reverse play reverse',
-                onEnter: () => console.log('Services entered!'),
-                onLeave: () => console.log('Services left!'),
-            }
-        });
+        console.log('Hero element found:', !!heroElement);
+        console.log('Hero title found:', !!heroTitle);
         
-        servicesTl.addLabel('cardsStart')
-            .from('.service-card', {
-                duration: 0.8,
-                y: 100,
-                opacity: 0,
-                stagger: {
-                    amount: 0.6,
-                    from: 'start'
+        if (heroTitle) {
+            console.log('Creating simple ScrollTrigger for hero title...');
+            
+            gsap.to('.hero-title', {
+                scrollTrigger: {
+                    trigger: '.hero-title',
+                    start: 'top 80%',
+                    end: 'bottom 20%',
+                    markers: true,
+                    onEnter: () => console.log('🎯 Hero title entered!'),
+                    onLeave: () => console.log('🎯 Hero title left!'),
+                    onUpdate: (self) => console.log('🎯 Hero progress:', self.progress)
                 },
-                ease: "back.out(1.7)"
-            })
-            .from('.service-card .service-icon', {
-                duration: 0.5,
-                scale: 0,
-                rotation: 180,
-                stagger: 0.1,
-                ease: "bounce.out"
-            }, '-=0.4')
-            .addLabel('cardsComplete');
+                x: 100,
+                duration: 2,
+                ease: 'power2.out'
+            });
+            
+            console.log('✅ Basic ScrollTrigger created');
+        }
         
-        // About section with pin and scrub
-        let aboutTl = gsap.timeline({
-            scrollTrigger: {
-                trigger: '.about',
-                start: 'top top',
-                end: '+=300',
-                scrub: 0.5,
-                pin: true,
-                snap: {
-                    snapTo: 'labels',
-                    duration: { min: 0.2, max: 3 },
-                    delay: 0.2,
-                    ease: 'power1.inOut'
-                }
-            }
-        });
+        // Test service cards animation
+        console.log('Testing service cards...');
+        const serviceCards = document.querySelectorAll('.service-card');
+        console.log('Service cards found:', serviceCards.length);
         
-        aboutTl.addLabel('aboutStart')
-            .from('.about-text h2', { x: -100, opacity: 0 })
-            .from('.about-text p', { x: -50, opacity: 0 }, '-=0.3')
-            .addLabel('statsReveal')
-            .from('.stat', {
-                scale: 0,
+        if (serviceCards.length > 0) {
+            gsap.from('.service-card', {
+                scrollTrigger: {
+                    trigger: '.services-grid',
+                    start: 'top 80%',
+                    markers: true,
+                    onEnter: () => console.log('🎯 Services entered!')
+                },
+                y: 50,
                 opacity: 0,
+                duration: 1,
                 stagger: 0.2,
-                ease: "back.out(2)",
-                onComplete: () => animateCounters()
-            })
-            .from('.tech-item', {
-                y: 30,
-                opacity: 0,
-                stagger: 0.1,
-                ease: "power2.out"
-            }, '-=0.5')
-            .addLabel('aboutEnd');
-        
-        // Contact section with reveal effect
-        ScrollTrigger.create({
-            trigger: '.contact',
-            start: 'top 70%',
-            end: 'bottom 30%',
-            onEnter: () => {
-                gsap.from('.contact-method', {
-                    duration: 0.8,
-                    x: -50,
-                    opacity: 0,
-                    stagger: 0.15,
-                    ease: "power2.out"
-                });
-                
-                gsap.from('.contact-form', {
-                    duration: 1,
-                    y: 50,
-                    opacity: 0,
-                    delay: 0.3,
-                    ease: "power2.out"
-                });
-            },
-            onToggle: self => console.log('Contact toggled, isActive:', self.isActive),
-            onUpdate: self => {
-                if (self.progress > 0.5) {
-                    document.querySelector('.contact')?.classList.add('highlight');
-                } else {
-                    document.querySelector('.contact')?.classList.remove('highlight');
-                }
-            }
-        });
-        
-        // Parallax effect for hero background
-        gsap.to('.hero', {
-            backgroundPosition: "50% 100%",
-            ease: "none",
-            scrollTrigger: {
-                trigger: '.hero',
-                start: 'top top',
-                end: 'bottom top',
-                scrub: true
-            }
-        });
+                ease: 'power2.out'
+            });
+            console.log('✅ Service cards animation created');
+        }
     }
 
     // Service cards hover effect with tilt
