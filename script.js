@@ -398,26 +398,44 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // GSAP Realistic Driving Animation
     function initDrivingAnimation() {
-        if (typeof gsap === 'undefined' || !gsap.registerPlugin) return;
+        console.log('🚗 === DRIVING ANIMATION DEBUG ===');
+        console.log('GSAP available:', typeof gsap);
+        console.log('ScrollTrigger available:', typeof ScrollTrigger);
+        
+        if (typeof gsap === 'undefined' || !gsap.registerPlugin) {
+            console.error('❌ GSAP not available for driving animation');
+            return;
+        }
         
         gsap.registerPlugin(ScrollTrigger);
+        console.log('✅ ScrollTrigger registered');
         
         // Realistic horizontal driving animation
         const drivingCar = document.querySelector('.driving-car');
+        const drivingSection = document.querySelector('.driving-animation');
+        
+        console.log('Driving car element:', drivingCar);
+        console.log('Driving section element:', drivingSection);
         
         if (drivingCar) {
+            console.log('✅ Driving car found, setting up animation...');
             // Set initial position
             gsap.set(drivingCar, {
                 left: '-250px',
                 bottom: '20%',
                 scale: 0.8
             });
+            console.log('✅ Initial position set for driving car');
             
             // Create continuous driving animation
             const drivingTimeline = gsap.timeline({
                 repeat: -1,
-                ease: "none"
+                ease: "none",
+                onStart: () => console.log('🚗 Timeline started!'),
+                onComplete: () => console.log('🚗 Timeline completed (will repeat)'),
+                onRepeat: () => console.log('🚗 Timeline repeating...')
             });
+            console.log('✅ Timeline created');
             
             // Car drives across the screen with realistic effects
             drivingTimeline
@@ -465,6 +483,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     scale: 0.8
                 });
             
+            console.log('✅ Timeline animations added');
+            
             // Add engine vibration effect
             gsap.to(drivingCar, {
                 y: "+=2",
@@ -473,20 +493,35 @@ document.addEventListener('DOMContentLoaded', function() {
                 yoyo: true,
                 ease: "power2.inOut"
             });
+            console.log('✅ Engine vibration effect added');
             
             // Trigger animation when section is visible
-            ScrollTrigger.create({
+            const scrollTrigger = ScrollTrigger.create({
                 trigger: '.driving-animation',
                 start: "top 80%",
                 end: "bottom 20%",
                 onEnter: () => {
+                    console.log('🎯 ScrollTrigger ENTER - Starting driving animation!');
                     drivingTimeline.play();
-                    console.log('🚗 Driving animation started!');
                 },
-                onLeave: () => drivingTimeline.pause(),
-                onEnterBack: () => drivingTimeline.play(),
-                onLeaveBack: () => drivingTimeline.pause()
+                onLeave: () => {
+                    console.log('🎯 ScrollTrigger LEAVE - Pausing driving animation');
+                    drivingTimeline.pause();
+                },
+                onEnterBack: () => {
+                    console.log('🎯 ScrollTrigger ENTER BACK - Resuming driving animation');
+                    drivingTimeline.play();
+                },
+                onLeaveBack: () => {
+                    console.log('🎯 ScrollTrigger LEAVE BACK - Pausing driving animation');
+                    drivingTimeline.pause();
+                },
+                markers: true // Add visual markers for debugging
             });
+            console.log('✅ ScrollTrigger created:', scrollTrigger);
+        } else {
+            console.error('❌ Driving car element not found!');
+            console.log('Available elements with .driving-car:', document.querySelectorAll('.driving-car'));
         }
     }
 
@@ -518,8 +553,11 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Initialize GSAP animations
+    console.log('🚀 Initializing all GSAP animations...');
     initGSAPAnimations();
     initScrollAnimations();
+    
+    console.log('🚗 About to initialize driving animation...');
     initDrivingAnimation();
     
     // Initialize other animations
