@@ -194,24 +194,6 @@
             <h2>Drive Your Business Forward</h2>
             <p>Experience the speed and precision of our development process</p>
         </div>
-        <!-- Realistic driving car -->
-        <div class="driving-car">
-            <model-viewer 
-                id="driving-lamborghini-realistic"
-                src="./models/2012_lamborghini_aventador.glb"
-                alt="Lamborghini Driving Animation"
-                shadow-intensity="2"
-                exposure="3.0"
-                tone-mapping="aces"
-                environment-image="neutral"
-                loading="eager"
-                reveal="auto"
-                camera-orbit="45deg 60deg 4m"
-                interaction-policy="never"
-                disable-zoom
-                style="width: 200px; height: 120px; background-color: transparent;">
-            </model-viewer>
-        </div>
     </section>
     
     <!-- JavaScript will create Lamborghini here -->
@@ -350,51 +332,13 @@
         console.log('Model Viewer loaded:', typeof customElements.get('model-viewer'));
         
         const heroModel = document.getElementById('hero-lamborghini');
-        const drivingModel = document.getElementById('driving-lamborghini-realistic');
-        const cssLamborghini = document.querySelector('.visible-lamborghini');
-        const drivingContainer = document.querySelector('.car-container-3d');
-        const drivingCar = document.querySelector('.driving-car');
         
-        console.log('=== CHECKING ALL ELEMENTS ===');
+        console.log('=== CHECKING HERO ELEMENTS ===');
         console.log('Hero model found:', !!heroModel);
-        console.log('Driving model found:', !!drivingModel);
-        console.log('Driving car container found:', !!drivingCar);
-        console.log('CSS Lamborghini found:', !!cssLamborghini);
-        console.log('Driving container found:', !!drivingContainer);
         
-        if (drivingContainer) {
-            console.log('✅ Driving container exists');
-            console.log('Container classes:', drivingContainer.className);
-            console.log('Container style:', drivingContainer.style.cssText);
-            console.log('Container computed style:', getComputedStyle(drivingContainer).position);
-        }
+        console.log('=== ALL LAMBORGHINI ANIMATIONS CLEANED UP ===');
         
-        if (cssLamborghini) {
-            console.log('✅ CSS Lamborghini exists');
-            console.log('CSS Lamborghini parent:', cssLamborghini.parentElement);
-        }
-        
-        // Remove the flying Lamborghini - it's unrealistic for a driving animation
-        console.log('=== FLYING LAMBORGHINI REMOVED ===');
-        console.log('Keeping only realistic driving animations in the hero section');
-        
-        // Check if animation is working
-        setTimeout(() => {
-            if (drivingContainer) {
-                const rect = drivingContainer.getBoundingClientRect();
-                console.log('=== ANIMATION CHECK ===');
-                console.log('Container position:', { x: rect.left, y: rect.top, width: rect.width, height: rect.height });
-                console.log('Container is visible:', rect.width > 0 && rect.height > 0);
-            }
-            
-            const jsLambo = document.getElementById('js-lamborghini');
-            if (jsLambo) {
-                const jsRect = jsLambo.getBoundingClientRect();
-                console.log('=== JS LAMBORGHINI CHECK ===');
-                console.log('JS Lambo position:', { x: jsRect.left, y: jsRect.top, width: jsRect.width, height: jsRect.height });
-                console.log('JS Lambo is visible:', jsRect.width > 0 && jsRect.height > 0);
-            }
-        }, 3000);
+        // All driving animation checks removed
         
         if (heroModel) {
             heroModel.addEventListener('load', () => {
@@ -409,45 +353,7 @@
                 });
         }
         
-        if (drivingModel) {
-            drivingModel.addEventListener('load', () => {
-                console.log('✅ Driving Lamborghini loaded successfully!');
-            });
-            
-            drivingModel.addEventListener('error', () => {
-                console.error('❌ Driving Lamborghini failed to load');
-            });
-        }
-        
-        if (drivingCar) {
-            console.log('✅ Driving car element found:', drivingCar);
-            console.log('Driving car position:', {
-                left: drivingCar.style.left || getComputedStyle(drivingCar).left,
-                bottom: drivingCar.style.bottom || getComputedStyle(drivingCar).bottom,
-                visibility: getComputedStyle(drivingCar).visibility,
-                display: getComputedStyle(drivingCar).display
-            });
-        } else {
-            console.error('❌ Driving car not found initially');
-            
-            // Try to find it after a delay
-            setTimeout(() => {
-                const delayedDrivingCar = document.querySelector('.driving-car');
-                const delayedDrivingModel = document.getElementById('driving-lamborghini-realistic');
-                console.log('🔄 Delayed check - Driving car found:', !!delayedDrivingCar);
-                console.log('🔄 Delayed check - Driving model found:', !!delayedDrivingModel);
-                
-                if (delayedDrivingCar) {
-                    console.log('✅ Found driving car after delay!', delayedDrivingCar);
-                } else {
-                    console.log('❌ Still no driving car found');
-                    console.log('All elements with class containing "driving":', 
-                        document.querySelectorAll('[class*="driving"]'));
-                    console.log('All sections:', document.querySelectorAll('section'));
-                    console.log('Driving animation section:', document.querySelector('.driving-animation'));
-                }
-            }, 2000);
-        }
+        // All driving car detection and debug code removed
     });
     </script>
 </body>

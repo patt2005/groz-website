@@ -396,142 +396,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // GSAP Realistic Driving Animation
-    function initDrivingAnimation() {
-        console.log('🚗 === DRIVING ANIMATION DEBUG ===');
-        console.log('GSAP available:', typeof gsap);
-        console.log('ScrollTrigger available:', typeof ScrollTrigger);
-        
-        if (typeof gsap === 'undefined' || !gsap.registerPlugin) {
-            console.error('❌ GSAP not available for driving animation');
-            return;
-        }
-        
-        gsap.registerPlugin(ScrollTrigger);
-        console.log('✅ ScrollTrigger registered');
-        
-        // Realistic horizontal driving animation
-        const drivingCar = document.querySelector('.driving-car');
-        const drivingSection = document.querySelector('.driving-animation');
-        
-        console.log('Driving car element:', drivingCar);
-        console.log('Driving section element:', drivingSection);
-        
-        if (drivingCar) {
-            console.log('✅ Driving car found, setting up animation...');
-            // Set initial position
-            gsap.set(drivingCar, {
-                left: '-250px',
-                bottom: '20%',
-                scale: 0.8
-            });
-            console.log('✅ Initial position set for driving car');
-            
-            // Create continuous driving animation
-            const drivingTimeline = gsap.timeline({
-                repeat: -1,
-                ease: "none",
-                onStart: () => console.log('🚗 Timeline started!'),
-                onComplete: () => console.log('🚗 Timeline completed (will repeat)'),
-                onRepeat: () => console.log('🚗 Timeline repeating...')
-            });
-            console.log('✅ Timeline created');
-            
-            // Car drives across the screen with realistic effects
-            drivingTimeline
-                // Enter from left
-                .to(drivingCar, {
-                    left: '10%',
-                    duration: 2,
-                    ease: "power2.out",
-                    scale: 1,
-                    rotationY: -5
-                })
-                // Drive across middle with road bumps and steering
-                .to(drivingCar, {
-                    left: '50%',
-                    duration: 3,
-                    ease: "none",
-                    y: "random(-8, 8)",
-                    rotationY: "random(-3, 3)",
-                    rotationZ: "random(-1, 1)",
-                    scale: 1.1
-                })
-                // Continue to right side
-                .to(drivingCar, {
-                    left: '90%',
-                    duration: 2,
-                    ease: "none",
-                    y: "random(-5, 5)",
-                    rotationY: "random(-2, 2)",
-                    scale: 0.95
-                })
-                // Exit right
-                .to(drivingCar, {
-                    left: '120%',
-                    duration: 1.5,
-                    ease: "power2.in",
-                    scale: 0.7,
-                    rotationY: 5
-                })
-                // Reset position instantly
-                .set(drivingCar, {
-                    left: '-250px',
-                    y: 0,
-                    rotationY: 0,
-                    rotationZ: 0,
-                    scale: 0.8
-                });
-            
-            console.log('✅ Timeline animations added');
-            
-            // Add engine vibration effect
-            gsap.to(drivingCar, {
-                y: "+=2",
-                duration: 0.1,
-                repeat: -1,
-                yoyo: true,
-                ease: "power2.inOut"
-            });
-            console.log('✅ Engine vibration effect added');
-            
-            // Trigger animation when section is visible
-            const scrollTrigger = ScrollTrigger.create({
-                trigger: '.driving-animation',
-                start: "top 80%",
-                end: "bottom 20%",
-                onEnter: () => {
-                    console.log('🎯 ScrollTrigger ENTER - Starting driving animation!');
-                    drivingTimeline.play();
-                },
-                onLeave: () => {
-                    console.log('🎯 ScrollTrigger LEAVE - Pausing driving animation');
-                    drivingTimeline.pause();
-                },
-                onEnterBack: () => {
-                    console.log('🎯 ScrollTrigger ENTER BACK - Resuming driving animation');
-                    drivingTimeline.play();
-                },
-                onLeaveBack: () => {
-                    console.log('🎯 ScrollTrigger LEAVE BACK - Pausing driving animation');
-                    drivingTimeline.pause();
-                },
-                markers: true // Add visual markers for debugging
-            });
-            console.log('✅ ScrollTrigger created:', scrollTrigger);
-            
-            // Manual test - start animation after 3 seconds for debugging
-            setTimeout(() => {
-                console.log('🧪 Manual test - Starting driving animation in 3 seconds...');
-                drivingTimeline.play();
-            }, 3000);
-            
-        } else {
-            console.error('❌ Driving car element not found!');
-            console.log('Available elements with .driving-car:', document.querySelectorAll('.driving-car'));
-            console.log('All divs on page:', document.querySelectorAll('div'));
-        }
-    }
+    // Driving animation removed - no more Lamborghini in driving section
 
     // Form handling
     const contactForm = document.querySelector('.contact-form form');
@@ -565,14 +430,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initGSAPAnimations();
     initScrollAnimations();
     
-    console.log('🚗 About to initialize driving animation...');
-    initDrivingAnimation();
-    
-    // Retry driving animation initialization after 2 seconds in case elements load late
-    setTimeout(() => {
-        console.log('🔄 Retrying driving animation initialization...');
-        initDrivingAnimation();
-    }, 2000);
+    // Driving animation initialization removed
     
     // Initialize other animations
     const drivingAnimation = new DrivingAnimation();
