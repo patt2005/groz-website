@@ -355,32 +355,83 @@
         
         // All driving car detection and debug code removed
         
-        // ScrollTrigger Test directly in HTML
-        console.log('🎯 === SCROLLTRIGGER TEST IN HTML ===');
-        console.log('GSAP available:', typeof gsap);
-        console.log('ScrollTrigger available:', typeof ScrollTrigger);
+        // ScrollTrigger Animations
+        console.log('🎯 Setting up ScrollTrigger animations...');
         
         setTimeout(() => {
             if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
-                console.log('✅ Both GSAP and ScrollTrigger loaded!');
                 gsap.registerPlugin(ScrollTrigger);
                 
-                // Simple test animation
+                // Hero parallax effect
                 gsap.to('.hero-title', {
                     scrollTrigger: {
-                        trigger: '.hero-title',
-                        start: 'top 80%',
-                        markers: true,
-                        onEnter: () => console.log('🎯 HERO TITLE TRIGGERED!'),
-                        onUpdate: (self) => console.log('🎯 Progress:', self.progress.toFixed(2))
+                        trigger: '.hero',
+                        start: 'top top',
+                        end: 'bottom top',
+                        scrub: 1
                     },
-                    x: 50,
-                    duration: 1
+                    y: -100,
+                    opacity: 0.3
                 });
                 
-                console.log('✅ ScrollTrigger animation created!');
-            } else {
-                console.error('❌ GSAP or ScrollTrigger not loaded');
+                gsap.to('.car-3d-container', {
+                    scrollTrigger: {
+                        trigger: '.hero',
+                        start: 'top top', 
+                        end: 'bottom top',
+                        scrub: 0.5
+                    },
+                    scale: 1.3,
+                    rotationY: 20
+                });
+                
+                // Service cards reveal
+                gsap.from('.service-card', {
+                    scrollTrigger: {
+                        trigger: '.services-grid',
+                        start: 'top 80%',
+                        onEnter: () => console.log('🎯 Services revealed!')
+                    },
+                    y: 80,
+                    opacity: 0,
+                    duration: 1,
+                    stagger: 0.2,
+                    ease: 'back.out(1.7)'
+                });
+                
+                // Stats animation  
+                gsap.from('.stat', {
+                    scrollTrigger: {
+                        trigger: '.stats',
+                        start: 'top 70%',
+                        onEnter: () => {
+                            console.log('🎯 Stats revealed!');
+                            // Trigger counter animation
+                            const counters = document.querySelectorAll('.stat h3');
+                            counters.forEach(counter => {
+                                const target = parseInt(counter.textContent.replace(/\D/g, ''));
+                                const suffix = counter.textContent.replace(/[0-9]/g, '');
+                                let count = 0;
+                                const increment = target / 50;
+                                const timer = setInterval(() => {
+                                    count += increment;
+                                    if (count >= target) {
+                                        counter.textContent = target + suffix;
+                                        clearInterval(timer);
+                                    } else {
+                                        counter.textContent = Math.floor(count) + suffix;
+                                    }
+                                }, 30);
+                            });
+                        }
+                    },
+                    scale: 0,
+                    duration: 0.8,
+                    stagger: 0.1,
+                    ease: 'back.out(2)'
+                });
+                
+                console.log('✅ All ScrollTrigger animations created!');
             }
         }, 1000);
     });
