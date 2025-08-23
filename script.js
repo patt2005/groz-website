@@ -406,34 +406,83 @@ document.addEventListener('DOMContentLoaded', function() {
         const drivingCar = document.querySelector('.driving-car');
         
         if (drivingCar) {
-            // Create timeline for realistic driving
+            // Set initial position
+            gsap.set(drivingCar, {
+                left: '-250px',
+                bottom: '20%',
+                scale: 0.8
+            });
+            
+            // Create continuous driving animation
             const drivingTimeline = gsap.timeline({
                 repeat: -1,
                 ease: "none"
             });
             
-            // Car drives across the screen horizontally (realistic)
+            // Car drives across the screen with realistic effects
             drivingTimeline
+                // Enter from left
+                .to(drivingCar, {
+                    left: '10%',
+                    duration: 2,
+                    ease: "power2.out",
+                    scale: 1,
+                    rotationY: -5
+                })
+                // Drive across middle with road bumps and steering
+                .to(drivingCar, {
+                    left: '50%',
+                    duration: 3,
+                    ease: "none",
+                    y: "random(-8, 8)",
+                    rotationY: "random(-3, 3)",
+                    rotationZ: "random(-1, 1)",
+                    scale: 1.1
+                })
+                // Continue to right side
+                .to(drivingCar, {
+                    left: '90%',
+                    duration: 2,
+                    ease: "none",
+                    y: "random(-5, 5)",
+                    rotationY: "random(-2, 2)",
+                    scale: 0.95
+                })
+                // Exit right
+                .to(drivingCar, {
+                    left: '120%',
+                    duration: 1.5,
+                    ease: "power2.in",
+                    scale: 0.7,
+                    rotationY: 5
+                })
+                // Reset position instantly
                 .set(drivingCar, {
                     left: '-250px',
-                    bottom: '20%'
-                })
-                .to(drivingCar, {
-                    left: '100vw',
-                    duration: 8,
-                    ease: "power1.inOut",
-                    // Add slight vertical movement for road bumps
-                    y: "+=10, -=5, +=8, -=3, +=5",
-                    // Slight rotation for realistic driving
-                    rotation: "0, 1, -0.5, 0.8, 0"
+                    y: 0,
+                    rotationY: 0,
+                    rotationZ: 0,
+                    scale: 0.8
                 });
+            
+            // Add engine vibration effect
+            gsap.to(drivingCar, {
+                y: "+=2",
+                duration: 0.1,
+                repeat: -1,
+                yoyo: true,
+                ease: "power2.inOut"
+            });
             
             // Trigger animation when section is visible
             ScrollTrigger.create({
                 trigger: '.driving-animation',
                 start: "top 80%",
                 end: "bottom 20%",
-                onEnter: () => drivingTimeline.play(),
+                onEnter: () => {
+                    drivingTimeline.play();
+                    console.log('🚗 Driving animation started!');
+                },
                 onLeave: () => drivingTimeline.pause(),
                 onEnterBack: () => drivingTimeline.play(),
                 onLeaveBack: () => drivingTimeline.pause()
