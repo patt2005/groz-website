@@ -396,6 +396,51 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    // GSAP Realistic Driving Animation
+    function initDrivingAnimation() {
+        if (typeof gsap === 'undefined' || !gsap.registerPlugin) return;
+        
+        gsap.registerPlugin(ScrollTrigger);
+        
+        // Realistic horizontal driving animation
+        const drivingCar = document.querySelector('.driving-car');
+        
+        if (drivingCar) {
+            // Create timeline for realistic driving
+            const drivingTimeline = gsap.timeline({
+                repeat: -1,
+                ease: "none"
+            });
+            
+            // Car drives across the screen horizontally (realistic)
+            drivingTimeline
+                .set(drivingCar, {
+                    left: '-250px',
+                    bottom: '20%'
+                })
+                .to(drivingCar, {
+                    left: '100vw',
+                    duration: 8,
+                    ease: "power1.inOut",
+                    // Add slight vertical movement for road bumps
+                    y: "+=10, -=5, +=8, -=3, +=5",
+                    // Slight rotation for realistic driving
+                    rotation: "0, 1, -0.5, 0.8, 0"
+                });
+            
+            // Trigger animation when section is visible
+            ScrollTrigger.create({
+                trigger: '.driving-animation',
+                start: "top 80%",
+                end: "bottom 20%",
+                onEnter: () => drivingTimeline.play(),
+                onLeave: () => drivingTimeline.pause(),
+                onEnterBack: () => drivingTimeline.play(),
+                onLeaveBack: () => drivingTimeline.pause()
+            });
+        }
+    }
+
     // Form handling
     const contactForm = document.querySelector('.contact-form form');
     if (contactForm) {
@@ -426,6 +471,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize GSAP animations
     initGSAPAnimations();
     initScrollAnimations();
+    initDrivingAnimation();
     
     // Initialize other animations
     const drivingAnimation = new DrivingAnimation();
