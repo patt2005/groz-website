@@ -107,9 +107,6 @@
             
             <div class="services-grid">
                 <div class="service-card" data-service="white">
-                    <div class="service-icon">
-                        <i class="fas fa-mobile-alt"></i>
-                    </div>
                     <h3>White Label Apps</h3>
                     <p>Ready-to-deploy applications with full customization options for your brand.</p>
                     <div class="service-features">
@@ -120,9 +117,6 @@
                 </div>
 
                 <div class="service-card" data-service="grey">
-                    <div class="service-icon">
-                        <i class="fas fa-cogs"></i>
-                    </div>
                     <h3>Grey Market Apps</h3>
                     <p>Specialized applications for niche markets and unique business requirements.</p>
                     <div class="service-features">
@@ -133,9 +127,6 @@
                 </div>
 
                 <div class="service-card" data-service="cleaners">
-                    <div class="service-icon">
-                        <i class="fas fa-broom"></i>
-                    </div>
                     <h3>System Cleaners</h3>
                     <p>Advanced cleaning and optimization tools for peak device performance.</p>
                     <div class="service-features">
@@ -146,9 +137,6 @@
                 </div>
 
                 <div class="service-card" data-service="ai">
-                    <div class="service-icon">
-                        <i class="fas fa-brain"></i>
-                    </div>
                     <h3>AI Solutions</h3>
                     <p>Intelligent applications powered by machine learning and artificial intelligence.</p>
                     <div class="service-features">
@@ -159,9 +147,6 @@
                 </div>
 
                 <div class="service-card" data-service="custom">
-                    <div class="service-icon">
-                        <i class="fas fa-rocket"></i>
-                    </div>
                     <h3>Custom Development</h3>
                     <p>Bespoke applications tailored to your specific business needs and requirements.</p>
                     <div class="service-features">
@@ -172,9 +157,6 @@
                 </div>
 
                 <div class="service-card" data-service="enterprise">
-                    <div class="service-icon">
-                        <i class="fas fa-building"></i>
-                    </div>
                     <h3>Enterprise Solutions</h3>
                     <p>Scalable enterprise-grade applications for large organizations and corporations.</p>
                     <div class="service-features">
@@ -189,7 +171,6 @@
 
     <!-- Animation Section -->
     <section class="driving-animation">
-        <div class="road"></div>
         <div class="animation-content">
             <h2>Drive Your Business Forward</h2>
             <p>Experience the speed and precision of our development process</p>
@@ -428,16 +409,16 @@
                             ease: 'elastic.out(1, 0.5)'
                         });
                         
-                        // Continuous floating animation
+                        // Continuous floating animation  
                         elements.forEach((card, i) => {
                             gsap.to(card, {
-                                y: -20,
-                                rotation: Math.random() * 6 - 3,
-                                duration: 2 + Math.random() * 2,
+                                y: -15,
+                                rotation: Math.random() * 4 - 2,
+                                duration: 3 + Math.random() * 2,
                                 repeat: -1,
                                 yoyo: true,
                                 ease: 'sine.inOut',
-                                delay: i * 0.2
+                                delay: i * 0.3
                             });
                         });
                     },
