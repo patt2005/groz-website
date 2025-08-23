@@ -355,83 +355,263 @@
         
         // All driving car detection and debug code removed
         
-        // ScrollTrigger Animations
-        console.log('🎯 Setting up ScrollTrigger animations...');
+        // INSANE SCROLL ANIMATIONS 🔥🔥🔥
+        console.log('🔥 Setting up CRAZY ScrollTrigger animations...');
         
         setTimeout(() => {
             if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
                 gsap.registerPlugin(ScrollTrigger);
                 
-                // Hero parallax effect
-                gsap.to('.hero-title', {
+                // CRAZY HERO EFFECTS 🚗💨
+                let heroTl = gsap.timeline({
                     scrollTrigger: {
                         trigger: '.hero',
                         start: 'top top',
                         end: 'bottom top',
-                        scrub: 1
-                    },
-                    y: -100,
-                    opacity: 0.3
+                        scrub: 0.5,
+                        pin: false
+                    }
                 });
                 
-                gsap.to('.car-3d-container', {
-                    scrollTrigger: {
-                        trigger: '.hero',
-                        start: 'top top', 
-                        end: 'bottom top',
-                        scrub: 0.5
+                heroTl
+                    .to('.hero-title', { 
+                        y: -200, 
+                        rotation: -15, 
+                        scale: 2, 
+                        opacity: 0,
+                        filter: 'blur(10px)'
+                    })
+                    .to('.hero-subtitle', { 
+                        x: 300, 
+                        rotation: 25, 
+                        scale: 0.5, 
+                        opacity: 0 
+                    }, '<')
+                    .to('.car-3d-container', { 
+                        scale: 3, 
+                        rotationX: 45,
+                        rotationY: 360,
+                        rotationZ: 15,
+                        x: 200,
+                        y: -100,
+                        filter: 'hue-rotate(180deg) saturate(2)'
+                    }, '<')
+                    .to('.hero-buttons', {
+                        y: 500,
+                        rotation: 720,
+                        scale: 0,
+                        opacity: 0
+                    }, '<');
+                
+                // EXPLOSIVE SERVICE CARDS 💥
+                gsap.set('.service-card', { transformPerspective: 1000 });
+                
+                ScrollTrigger.batch('.service-card', {
+                    onEnter: (elements) => {
+                        console.log('💥 EXPLOSIVE SERVICES!');
+                        gsap.fromTo(elements, {
+                            y: 200,
+                            rotationX: -90,
+                            rotationY: 180,
+                            scale: 0,
+                            opacity: 0,
+                            filter: 'blur(20px) brightness(3)'
+                        }, {
+                            y: 0,
+                            rotationX: 0,
+                            rotationY: 0,
+                            scale: 1,
+                            opacity: 1,
+                            filter: 'blur(0px) brightness(1)',
+                            duration: 2,
+                            stagger: 0.3,
+                            ease: 'elastic.out(1, 0.5)'
+                        });
+                        
+                        // Continuous floating animation
+                        elements.forEach((card, i) => {
+                            gsap.to(card, {
+                                y: -20,
+                                rotation: Math.random() * 6 - 3,
+                                duration: 2 + Math.random() * 2,
+                                repeat: -1,
+                                yoyo: true,
+                                ease: 'sine.inOut',
+                                delay: i * 0.2
+                            });
+                        });
                     },
-                    scale: 1.3,
-                    rotationY: 20
+                    start: 'top 85%',
+                    refreshPriority: -1
                 });
                 
-                // Service cards reveal
-                gsap.from('.service-card', {
-                    scrollTrigger: {
-                        trigger: '.services-grid',
-                        start: 'top 80%',
-                        onEnter: () => console.log('🎯 Services revealed!')
-                    },
-                    y: 80,
-                    opacity: 0,
-                    duration: 1,
-                    stagger: 0.2,
-                    ease: 'back.out(1.7)'
-                });
-                
-                // Stats animation  
+                // MIND-BLOWING STATS WITH MATRIX EFFECT 🔢
                 gsap.from('.stat', {
                     scrollTrigger: {
                         trigger: '.stats',
                         start: 'top 70%',
                         onEnter: () => {
-                            console.log('🎯 Stats revealed!');
-                            // Trigger counter animation
+                            console.log('🔢 MATRIX STATS ACTIVATED!');
+                            
+                            // Matrix rain effect
+                            document.querySelectorAll('.stat').forEach((stat, i) => {
+                                // Create matrix digits
+                                for (let j = 0; j < 10; j++) {
+                                    const digit = document.createElement('span');
+                                    digit.textContent = Math.floor(Math.random() * 10);
+                                    digit.style.cssText = `
+                                        position: absolute;
+                                        color: #00ff00;
+                                        font-family: monospace;
+                                        font-size: 14px;
+                                        left: ${Math.random() * 100}%;
+                                        top: ${Math.random() * 100}%;
+                                        pointer-events: none;
+                                        z-index: 10;
+                                    `;
+                                    stat.appendChild(digit);
+                                    
+                                    gsap.fromTo(digit, {
+                                        y: -50,
+                                        opacity: 0
+                                    }, {
+                                        y: 100,
+                                        opacity: 1,
+                                        duration: 2,
+                                        repeat: 3,
+                                        yoyo: true,
+                                        delay: j * 0.1,
+                                        onComplete: () => digit.remove()
+                                    });
+                                }
+                            });
+                            
+                            // Crazy counter animation
                             const counters = document.querySelectorAll('.stat h3');
-                            counters.forEach(counter => {
+                            counters.forEach((counter, i) => {
                                 const target = parseInt(counter.textContent.replace(/\D/g, ''));
                                 const suffix = counter.textContent.replace(/[0-9]/g, '');
+                                
+                                gsap.fromTo(counter, {
+                                    scale: 0,
+                                    rotation: 720,
+                                    color: '#ff0000'
+                                }, {
+                                    scale: 1.5,
+                                    rotation: 0,
+                                    color: '#ffffff',
+                                    duration: 2,
+                                    ease: 'back.out(3)',
+                                    delay: i * 0.3
+                                });
+                                
                                 let count = 0;
-                                const increment = target / 50;
+                                const increment = target / 100;
                                 const timer = setInterval(() => {
                                     count += increment;
+                                    counter.style.color = `hsl(${Math.random() * 360}, 100%, 50%)`;
                                     if (count >= target) {
                                         counter.textContent = target + suffix;
+                                        counter.style.color = '#ffffff';
                                         clearInterval(timer);
                                     } else {
                                         counter.textContent = Math.floor(count) + suffix;
                                     }
-                                }, 30);
+                                }, 20);
                             });
                         }
                     },
                     scale: 0,
-                    duration: 0.8,
-                    stagger: 0.1,
-                    ease: 'back.out(2)'
+                    rotationY: 360,
+                    z: -500,
+                    duration: 1.5,
+                    stagger: 0.2,
+                    ease: 'power4.out'
                 });
                 
-                console.log('✅ All ScrollTrigger animations created!');
+                // CONTACT SECTION EXPLOSION 💥
+                ScrollTrigger.create({
+                    trigger: '.contact',
+                    start: 'top 70%',
+                    onEnter: () => {
+                        console.log('💥 CONTACT EXPLOSION!');
+                        
+                        // Exploding contact methods
+                        gsap.fromTo('.contact-method', {
+                            scale: 0,
+                            rotation: 360,
+                            x: -200,
+                            opacity: 0,
+                            filter: 'hue-rotate(0deg)'
+                        }, {
+                            scale: 1,
+                            rotation: 0,
+                            x: 0,
+                            opacity: 1,
+                            filter: 'hue-rotate(360deg)',
+                            duration: 2,
+                            stagger: 0.2,
+                            ease: 'elastic.out(1, 0.3)'
+                        });
+                        
+                        // Form with crazy entrance
+                        gsap.fromTo('.contact-form', {
+                            y: 300,
+                            rotationX: -90,
+                            scale: 0.5,
+                            opacity: 0,
+                            filter: 'blur(20px)'
+                        }, {
+                            y: 0,
+                            rotationX: 0,
+                            scale: 1,
+                            opacity: 1,
+                            filter: 'blur(0px)',
+                            duration: 2.5,
+                            delay: 0.5,
+                            ease: 'back.out(2)'
+                        });
+                    }
+                });
+                
+                // CONTINUOUS BACKGROUND EFFECTS 🌈
+                gsap.to('body', {
+                    backgroundPosition: '200% 200%',
+                    duration: 20,
+                    repeat: -1,
+                    ease: 'none'
+                });
+                
+                // FLOATING PARTICLES
+                for (let i = 0; i < 20; i++) {
+                    const particle = document.createElement('div');
+                    particle.style.cssText = `
+                        position: fixed;
+                        width: ${Math.random() * 10 + 5}px;
+                        height: ${Math.random() * 10 + 5}px;
+                        background: radial-gradient(circle, #ff6b35, #00d4ff);
+                        border-radius: 50%;
+                        pointer-events: none;
+                        z-index: 1000;
+                        left: ${Math.random() * 100}vw;
+                        top: ${Math.random() * 100}vh;
+                    `;
+                    document.body.appendChild(particle);
+                    
+                    gsap.to(particle, {
+                        x: 'random(-200, 200)',
+                        y: 'random(-200, 200)',
+                        rotation: 360,
+                        scale: 'random(0.5, 2)',
+                        opacity: 'random(0.3, 1)',
+                        duration: 'random(5, 15)',
+                        repeat: -1,
+                        yoyo: true,
+                        ease: 'sine.inOut'
+                    });
+                }
+                
+                console.log('🔥 INSANE ANIMATIONS ACTIVATED!');
             }
         }, 1000);
     });
