@@ -427,6 +427,26 @@
                 visibility: getComputedStyle(drivingCar).visibility,
                 display: getComputedStyle(drivingCar).display
             });
+        } else {
+            console.error('❌ Driving car not found initially');
+            
+            // Try to find it after a delay
+            setTimeout(() => {
+                const delayedDrivingCar = document.querySelector('.driving-car');
+                const delayedDrivingModel = document.getElementById('driving-lamborghini-realistic');
+                console.log('🔄 Delayed check - Driving car found:', !!delayedDrivingCar);
+                console.log('🔄 Delayed check - Driving model found:', !!delayedDrivingModel);
+                
+                if (delayedDrivingCar) {
+                    console.log('✅ Found driving car after delay!', delayedDrivingCar);
+                } else {
+                    console.log('❌ Still no driving car found');
+                    console.log('All elements with class containing "driving":', 
+                        document.querySelectorAll('[class*="driving"]'));
+                    console.log('All sections:', document.querySelectorAll('section'));
+                    console.log('Driving animation section:', document.querySelector('.driving-animation'));
+                }
+            }, 2000);
         }
     });
     </script>

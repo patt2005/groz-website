@@ -568,6 +568,12 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('🚗 About to initialize driving animation...');
     initDrivingAnimation();
     
+    // Retry driving animation initialization after 2 seconds in case elements load late
+    setTimeout(() => {
+        console.log('🔄 Retrying driving animation initialization...');
+        initDrivingAnimation();
+    }, 2000);
+    
     // Initialize other animations
     const drivingAnimation = new DrivingAnimation();
     const particleSystem = new ParticleSystem();
