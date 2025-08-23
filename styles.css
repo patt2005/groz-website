@@ -808,7 +808,31 @@ model-viewer {
     animation: roadMove 1.5s linear infinite;
 }
 
-/* Driving car removed */
+/* Advanced ScrollTrigger effects */
+.contact.highlight {
+    background: linear-gradient(135deg, rgba(255, 107, 53, 0.1) 0%, rgba(0, 212, 255, 0.1) 100%);
+    transition: background 0.5s ease;
+}
+
+/* Enhanced animations */
+.hero {
+    background-attachment: fixed;
+    background-position: 50% 50%;
+    transition: background-position 0.1s ease-out;
+}
+
+.service-card {
+    transform-origin: center;
+    backface-visibility: hidden;
+}
+
+.stat {
+    transform-origin: center;
+}
+
+.tech-item {
+    transform-origin: center;
+}
 
 #driving-3d-canvas {
     width: 100%;

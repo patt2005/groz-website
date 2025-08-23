@@ -44,67 +44,141 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // GSAP ScrollTrigger animations
+    // Advanced GSAP ScrollTrigger animations
     function initScrollAnimations() {
         if (typeof gsap === 'undefined' || !gsap.registerPlugin) return;
         
         gsap.registerPlugin(ScrollTrigger);
         
-        // Service cards animation
-        gsap.from('.service-card', {
-            duration: 0.8,
-            y: 50,
-            opacity: 0,
-            stagger: 0.1,
-            ease: "power2.out",
+        // Hero section with scrub effect
+        let heroTl = gsap.timeline({
+            scrollTrigger: {
+                trigger: '.hero',
+                start: 'top top',
+                end: 'bottom top',
+                scrub: 1,
+                pin: false,
+                onUpdate: self => {
+                    console.log('Hero scroll progress:', self.progress.toFixed(3));
+                }
+            }
+        });
+        
+        heroTl.addLabel('start')
+            .to('.hero-title', { y: -50, opacity: 0.3 })
+            .to('.hero-subtitle', { y: -30, opacity: 0.5 }, '<')
+            .to('.car-3d-container', { scale: 1.2, rotationY: 15 }, '<')
+            .addLabel('end');
+        
+        // Services section with advanced stagger
+        let servicesTl = gsap.timeline({
             scrollTrigger: {
                 trigger: '.services-grid',
-                start: "top 80%",
-                end: "bottom 20%",
-                toggleActions: "play none none reverse"
+                start: 'top 80%',
+                end: 'bottom 20%',
+                toggleActions: 'play reverse play reverse',
+                onEnter: () => console.log('Services entered!'),
+                onLeave: () => console.log('Services left!'),
             }
         });
         
-        // Tech items animation
-        gsap.from('.tech-item', {
-            duration: 0.6,
-            scale: 0,
-            opacity: 0,
-            stagger: 0.1,
-            ease: "back.out(1.7)",
+        servicesTl.addLabel('cardsStart')
+            .from('.service-card', {
+                duration: 0.8,
+                y: 100,
+                opacity: 0,
+                stagger: {
+                    amount: 0.6,
+                    from: 'start'
+                },
+                ease: "back.out(1.7)"
+            })
+            .from('.service-card .service-icon', {
+                duration: 0.5,
+                scale: 0,
+                rotation: 180,
+                stagger: 0.1,
+                ease: "bounce.out"
+            }, '-=0.4')
+            .addLabel('cardsComplete');
+        
+        // About section with pin and scrub
+        let aboutTl = gsap.timeline({
             scrollTrigger: {
-                trigger: '.tech-stack',
-                start: "top 80%",
-                toggleActions: "play none none reverse"
+                trigger: '.about',
+                start: 'top top',
+                end: '+=300',
+                scrub: 0.5,
+                pin: true,
+                snap: {
+                    snapTo: 'labels',
+                    duration: { min: 0.2, max: 3 },
+                    delay: 0.2,
+                    ease: 'power1.inOut'
+                }
             }
         });
         
-        // Stats animation
-        gsap.from('.stat', {
-            duration: 0.8,
-            y: 30,
-            opacity: 0,
-            stagger: 0.2,
-            ease: "power2.out",
-            scrollTrigger: {
-                trigger: '.stats',
-                start: "top 80%",
-                toggleActions: "play none none reverse",
-                onEnter: () => animateCounters()
+        aboutTl.addLabel('aboutStart')
+            .from('.about-text h2', { x: -100, opacity: 0 })
+            .from('.about-text p', { x: -50, opacity: 0 }, '-=0.3')
+            .addLabel('statsReveal')
+            .from('.stat', {
+                scale: 0,
+                opacity: 0,
+                stagger: 0.2,
+                ease: "back.out(2)",
+                onComplete: () => animateCounters()
+            })
+            .from('.tech-item', {
+                y: 30,
+                opacity: 0,
+                stagger: 0.1,
+                ease: "power2.out"
+            }, '-=0.5')
+            .addLabel('aboutEnd');
+        
+        // Contact section with reveal effect
+        ScrollTrigger.create({
+            trigger: '.contact',
+            start: 'top 70%',
+            end: 'bottom 30%',
+            onEnter: () => {
+                gsap.from('.contact-method', {
+                    duration: 0.8,
+                    x: -50,
+                    opacity: 0,
+                    stagger: 0.15,
+                    ease: "power2.out"
+                });
+                
+                gsap.from('.contact-form', {
+                    duration: 1,
+                    y: 50,
+                    opacity: 0,
+                    delay: 0.3,
+                    ease: "power2.out"
+                });
+            },
+            onToggle: self => console.log('Contact toggled, isActive:', self.isActive),
+            onUpdate: self => {
+                if (self.progress > 0.5) {
+                    document.querySelector('.contact')?.classList.add('highlight');
+                } else {
+                    document.querySelector('.contact')?.classList.remove('highlight');
+                }
             }
         });
         
-        // Contact methods animation
-        gsap.from('.contact-method', {
-            duration: 0.6,
-            x: -30,
-            opacity: 0,
-            stagger: 0.1,
-            ease: "power2.out",
+        // Parallax effect for hero background
+        gsap.to('.hero', {
+            backgroundPosition: "50% 100%",
+            ease: "none",
             scrollTrigger: {
-                trigger: '.contact-methods',
-                start: "top 80%",
-                toggleActions: "play none none reverse"
+                trigger: '.hero',
+                start: 'top top',
+                end: 'bottom top',
+                scrub: true
             }
         });
     }
