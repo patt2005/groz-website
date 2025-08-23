@@ -519,9 +519,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 markers: true // Add visual markers for debugging
             });
             console.log('✅ ScrollTrigger created:', scrollTrigger);
+            
+            // Manual test - start animation after 3 seconds for debugging
+            setTimeout(() => {
+                console.log('🧪 Manual test - Starting driving animation in 3 seconds...');
+                drivingTimeline.play();
+            }, 3000);
+            
         } else {
             console.error('❌ Driving car element not found!');
             console.log('Available elements with .driving-car:', document.querySelectorAll('.driving-car'));
+            console.log('All divs on page:', document.querySelectorAll('div'));
         }
     }
 

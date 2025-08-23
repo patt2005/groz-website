@@ -350,13 +350,15 @@
         console.log('Model Viewer loaded:', typeof customElements.get('model-viewer'));
         
         const heroModel = document.getElementById('hero-lamborghini');
-        const drivingModel = document.getElementById('driving-lamborghini');
+        const drivingModel = document.getElementById('driving-lamborghini-realistic');
         const cssLamborghini = document.querySelector('.visible-lamborghini');
         const drivingContainer = document.querySelector('.car-container-3d');
+        const drivingCar = document.querySelector('.driving-car');
         
         console.log('=== CHECKING ALL ELEMENTS ===');
         console.log('Hero model found:', !!heroModel);
         console.log('Driving model found:', !!drivingModel);
+        console.log('Driving car container found:', !!drivingCar);
         console.log('CSS Lamborghini found:', !!cssLamborghini);
         console.log('Driving container found:', !!drivingContainer);
         
@@ -405,6 +407,26 @@
                     console.log('Hero model file check - Status:', response.status, response.statusText);
                     console.log('Hero model file size:', response.headers.get('content-length'), 'bytes');
                 });
+        }
+        
+        if (drivingModel) {
+            drivingModel.addEventListener('load', () => {
+                console.log('✅ Driving Lamborghini loaded successfully!');
+            });
+            
+            drivingModel.addEventListener('error', () => {
+                console.error('❌ Driving Lamborghini failed to load');
+            });
+        }
+        
+        if (drivingCar) {
+            console.log('✅ Driving car element found:', drivingCar);
+            console.log('Driving car position:', {
+                left: drivingCar.style.left || getComputedStyle(drivingCar).left,
+                bottom: drivingCar.style.bottom || getComputedStyle(drivingCar).bottom,
+                visibility: getComputedStyle(drivingCar).visibility,
+                display: getComputedStyle(drivingCar).display
+            });
         }
     });
     </script>
