@@ -7,7 +7,8 @@
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <!-- Model Viewer for 3D models -->
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
     
@@ -57,7 +58,7 @@
                 </div>
             </div>
             <div class="hero-visual">
-                <div class="car-3d-container animate__animated animate__zoomIn animate__delay-1s">
+                <div class="car-3d-container">
                     <model-viewer 
                         id="hero-lamborghini"
                         src="./models/2012_lamborghini_aventador.glb"
@@ -75,7 +76,7 @@
                         min-camera-orbit="auto 10deg auto"
                         max-camera-orbit="auto 160deg auto"
                         interaction-policy="allow-when-focused"
-                        class="animate__animated animate__pulse animate__infinite animate__slow">
+                        class="gsap-pulse">
                         
                         <div class="loading-indicator" slot="poster">
                             <div class="spinner"></div>
@@ -353,11 +354,11 @@
             console.log('CSS Lamborghini parent:', cssLamborghini.parentElement);
         }
         
-        // CREATE LAMBORGHINI WITH ANIME.JS - powerful and simple
-        console.log('=== CREATING ANIME.JS LAMBORGHINI ===');
+        // CREATE LAMBORGHINI WITH GSAP - high performance animation
+        console.log('=== CREATING GSAP LAMBORGHINI ===');
         
         const lamborghiniDiv = document.createElement('div');
-        lamborghiniDiv.id = 'anime-lamborghini';
+        lamborghiniDiv.id = 'gsap-lamborghini';
         lamborghiniDiv.style.cssText = `
             position: fixed;
             width: 300px;
@@ -365,14 +366,15 @@
             z-index: 9999;
             left: -200px;
             top: 70vh;
-            border: 3px solid red;
-            background: rgba(255, 255, 0, 0.3);
+            border: 3px solid #ff6b35;
+            background: rgba(255, 107, 53, 0.2);
+            border-radius: 10px;
         `;
         
         // Create model-viewer for the diagonal animation
         const modelViewer = document.createElement('model-viewer');
         modelViewer.setAttribute('src', './models/2012_lamborghini_aventador.glb');
-        modelViewer.setAttribute('alt', 'Lamborghini Diagonal Animation');
+        modelViewer.setAttribute('alt', 'Lamborghini GSAP Animation');
         modelViewer.setAttribute('shadow-intensity', '2');
         modelViewer.setAttribute('exposure', '4.0');
         modelViewer.setAttribute('tone-mapping', 'aces');
@@ -416,94 +418,82 @@
         });
         
         document.body.appendChild(lamborghiniDiv);
-        console.log('✅ Anime.js Lamborghini created successfully!');
+        console.log('✅ GSAP Lamborghini created successfully!');
         
         
-        // ANIME.JS TIMELINE FOR GLB MODEL DIAGONAL ANIMATION
-        console.log('Checking anime object:', typeof anime, anime);
+        // GSAP TIMELINE FOR GLB MODEL DIAGONAL ANIMATION
+        console.log('Checking gsap object:', typeof gsap, gsap);
         
-        // Wait for both Model Viewer and Anime.js to load
+        // Wait for GSAP to load
         setTimeout(() => {
-            if (typeof anime !== 'undefined' && typeof anime === 'function') {
-                console.log('✅ Anime.js library loaded correctly');
+            if (typeof gsap !== 'undefined' && gsap.timeline) {
+                console.log('✅ GSAP library loaded correctly');
                 
-                // Create advanced timeline for smooth diagonal movement
-                function startDiagonalGLBAnimation() {
-                    const tl = anime.timeline({
-                        easing: 'easeInOutCubic',
-                        duration: 1500,
-                        loop: true,
-                        direction: 'normal'
+                // Create advanced GSAP timeline for smooth diagonal movement
+                function startDiagonalGSAPAnimation() {
+                    const tl = gsap.timeline({
+                        repeat: -1,
+                        ease: "power2.inOut"
                     });
                     
                     // Phase 1: Enter from bottom-left
-                    tl.add({
-                        targets: '#anime-lamborghini',
-                        left: ['-200px', '15vw'],
-                        top: ['90vh', '75vh'],
-                        rotate: ['-25deg', '-15deg'],
-                        scale: [0.7, 0.9],
-                        opacity: [0, 1],
-                        duration: 1500,
-                        easing: 'easeOutQuad'
+                    tl.fromTo('#gsap-lamborghini', {
+                        left: '-200px',
+                        top: '90vh',
+                        rotation: -25,
+                        scale: 0.7,
+                        opacity: 0
+                    }, {
+                        left: '15vw',
+                        top: '75vh',
+                        rotation: -15,
+                        scale: 0.9,
+                        opacity: 1,
+                        duration: 1.5,
+                        ease: "power2.out"
                     })
                     
                     // Phase 2: Move to center with style
-                    .add({
-                        targets: '#anime-lamborghini',
-                        left: ['15vw', '50vw'],
-                        top: ['75vh', '50vh'],
-                        rotate: ['-15deg', '0deg'],
-                        scale: [0.9, 1.4],
-                        duration: 2000,
-                        easing: 'easeInOutCubic'
+                    .to('#gsap-lamborghini', {
+                        left: '50vw',
+                        top: '50vh',
+                        rotation: 0,
+                        scale: 1.4,
+                        duration: 2,
+                        ease: "power2.inOut"
                     })
                     
                     // Phase 3: Continue to top-right
-                    .add({
-                        targets: '#anime-lamborghini',
-                        left: ['50vw', '85vw'],
-                        top: ['50vh', '25vh'],
-                        rotate: ['0deg', '15deg'],
-                        scale: [1.4, 1.0],
-                        duration: 2000,
-                        easing: 'easeInOutCubic'
+                    .to('#gsap-lamborghini', {
+                        left: '85vw',
+                        top: '25vh',
+                        rotation: 15,
+                        scale: 1.0,
+                        duration: 2,
+                        ease: "power2.inOut"
                     })
                     
                     // Phase 4: Exit top-right
-                    .add({
-                        targets: '#anime-lamborghini',
-                        left: ['85vw', 'calc(100vw + 200px)'],
-                        top: ['25vh', '5vh'],
-                        rotate: ['15deg', '25deg'],
-                        scale: [1.0, 0.7],
-                        opacity: [1, 0],
-                        duration: 1500,
-                        easing: 'easeInQuad'
-                    })
-                    
-                    // Phase 5: Reset instantly
-                    .add({
-                        targets: '#anime-lamborghini',
-                        left: '-200px',
-                        top: '90vh',
-                        rotate: '-25deg',
+                    .to('#gsap-lamborghini', {
+                        left: 'calc(100vw + 200px)',
+                        top: '5vh',
+                        rotation: 25,
                         scale: 0.7,
                         opacity: 0,
-                        duration: 1,
-                        easing: 'linear'
+                        duration: 1.5,
+                        ease: "power2.in"
                     });
                     
-                        console.log('✅ Timeline diagonal animation created for GLB model!');
+                    console.log('✅ GSAP Timeline diagonal animation created for GLB model!');
                 }
                 
                 // Start the timeline animation immediately
-                startDiagonalGLBAnimation();
-                console.log('✅ Anime.js Timeline animation started!');
+                startDiagonalGSAPAnimation();
+                console.log('✅ GSAP Timeline animation started!');
         } else {
-            console.error('❌ Anime.js library not loaded - using CSS backup animation');
+            console.error('❌ GSAP library not loaded - using CSS backup animation');
             
-            // FALLBACK: CSS ANIMATION if Anime.js fails
+            // FALLBACK: CSS ANIMATION if GSAP fails
             const cssStyle = document.createElement('style');
             cssStyle.textContent = `
                 @keyframes cssDriveDiagonal {
@@ -551,7 +541,7 @@
                     }
                 }
                 
-                #anime-lamborghini {
+                #gsap-lamborghini {
                     animation: cssDriveDiagonal 8s ease-in-out infinite !important;
                 }
             `;

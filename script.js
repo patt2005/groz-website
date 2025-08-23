@@ -44,25 +44,70 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Intersection Observer for scroll animations
-    const observerOptions = {
-        threshold: 0.2,
-        rootMargin: '0px 0px -50px 0px'
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('animate-in');
+    // GSAP ScrollTrigger animations
+    function initScrollAnimations() {
+        if (typeof gsap === 'undefined' || !gsap.registerPlugin) return;
+        
+        gsap.registerPlugin(ScrollTrigger);
+        
+        // Service cards animation
+        gsap.from('.service-card', {
+            duration: 0.8,
+            y: 50,
+            opacity: 0,
+            stagger: 0.1,
+            ease: "power2.out",
+            scrollTrigger: {
+                trigger: '.services-grid',
+                start: "top 80%",
+                end: "bottom 20%",
+                toggleActions: "play none none reverse"
             }
         });
-    }, observerOptions);
-
-    // Observe elements for animation
-    const animateElements = document.querySelectorAll('.service-card, .tech-item, .stat, .contact-method');
-    animateElements.forEach(el => {
-        observer.observe(el);
-    });
+        
+        // Tech items animation
+        gsap.from('.tech-item', {
+            duration: 0.6,
+            scale: 0,
+            opacity: 0,
+            stagger: 0.1,
+            ease: "back.out(1.7)",
+            scrollTrigger: {
+                trigger: '.tech-stack',
+                start: "top 80%",
+                toggleActions: "play none none reverse"
+            }
+        });
+        
+        // Stats animation
+        gsap.from('.stat', {
+            duration: 0.8,
+            y: 30,
+            opacity: 0,
+            stagger: 0.2,
+            ease: "power2.out",
+            scrollTrigger: {
+                trigger: '.stats',
+                start: "top 80%",
+                toggleActions: "play none none reverse",
+                onEnter: () => animateCounters()
+            }
+        });
+        
+        // Contact methods animation
+        gsap.from('.contact-method', {
+            duration: 0.6,
+            x: -30,
+            opacity: 0,
+            stagger: 0.1,
+            ease: "power2.out",
+            scrollTrigger: {
+                trigger: '.contact-methods',
+                start: "top 80%",
+                toggleActions: "play none none reverse"
+            }
+        });
+    }
 
     // Service cards hover effect with tilt
     const serviceCards = document.querySelectorAll('.service-card');
@@ -281,23 +326,74 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Typewriter effect for hero title
-    function typewriterEffect() {
-        const title = document.querySelector('.hero-title');
-        if (!title) return;
+    // GSAP Hero animations
+    function initGSAPAnimations() {
+        if (typeof gsap === 'undefined') return;
         
-        const text = title.textContent;
-        title.textContent = '';
-        title.style.opacity = '1';
+        // Hero title animation
+        const heroTitle = document.querySelector('.hero-title');
+        const heroSubtitle = document.querySelector('.hero-subtitle');
+        const heroDescription = document.querySelector('.hero-description');
+        const heroButtons = document.querySelector('.hero-buttons');
+        const carContainer = document.querySelector('.car-3d-container');
         
-        let i = 0;
-        const timer = setInterval(() => {
-            title.textContent += text.charAt(i);
-            i++;
-            if (i >= text.length) {
-                clearInterval(timer);
-            }
-        }, 100);
+        if (heroTitle) {
+            gsap.from(heroTitle, {
+                duration: 1,
+                y: 50,
+                opacity: 0,
+                ease: "power2.out"
+            });
+        }
+        
+        if (heroSubtitle) {
+            gsap.from(heroSubtitle, {
+                duration: 1,
+                y: 30,
+                opacity: 0,
+                delay: 0.2,
+                ease: "power2.out"
+            });
+        }
+        
+        if (heroDescription) {
+            gsap.from(heroDescription, {
+                duration: 1,
+                y: 20,
+                opacity: 0,
+                delay: 0.4,
+                ease: "power2.out"
+            });
+        }
+        
+        if (heroButtons) {
+            gsap.from(heroButtons, {
+                duration: 1,
+                y: 20,
+                opacity: 0,
+                delay: 0.6,
+                ease: "power2.out"
+            });
+        }
+        
+        if (carContainer) {
+            gsap.from(carContainer, {
+                duration: 1.5,
+                scale: 0.8,
+                opacity: 0,
+                delay: 0.8,
+                ease: "back.out(1.7)"
+            });
+            
+            // Continuous pulse effect for the car
+            gsap.to(carContainer, {
+                scale: 1.05,
+                duration: 2,
+                yoyo: true,
+                repeat: -1,
+                ease: "power2.inOut"
+            });
+        }
     }
 
     // Form handling
@@ -327,7 +423,11 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Initialize animations
+    // Initialize GSAP animations
+    initGSAPAnimations();
+    initScrollAnimations();
+    
+    // Initialize other animations
     const drivingAnimation = new DrivingAnimation();
     const particleSystem = new ParticleSystem();
     
@@ -343,22 +443,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 1500);
     }
     
-    // Start counter animation when stats section is visible
-    const statsObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                animateCounters();
-                statsObserver.unobserve(entry.target);
-            }
-        });
-    }, {
-        threshold: 0.5
-    });
-    
-    const statsSection = document.querySelector('.stats');
-    if (statsSection) {
-        statsObserver.observe(statsSection);
-    }
+    // Stats counter animation is now handled by GSAP ScrollTrigger
 
     // Add loading animation
     window.addEventListener('load', () => {
@@ -396,24 +481,9 @@ document.addEventListener('DOMContentLoaded', function() {
         lastScrollTop = scrollTop;
     });
 
-    // Add CSS for animations
+    // Add CSS for navigation menu
     const style = document.createElement('style');
     style.textContent = `
-        .animate-in {
-            animation: slideInUp 0.8s ease-out forwards;
-        }
-        
-        @keyframes slideInUp {
-            from {
-                opacity: 0;
-                transform: translateY(50px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
         .nav-menu.active {
             display: flex;
             flex-direction: column;
