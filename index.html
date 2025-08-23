@@ -354,6 +354,35 @@
         }
         
         // All driving car detection and debug code removed
+        
+        // ScrollTrigger Test directly in HTML
+        console.log('🎯 === SCROLLTRIGGER TEST IN HTML ===');
+        console.log('GSAP available:', typeof gsap);
+        console.log('ScrollTrigger available:', typeof ScrollTrigger);
+        
+        setTimeout(() => {
+            if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+                console.log('✅ Both GSAP and ScrollTrigger loaded!');
+                gsap.registerPlugin(ScrollTrigger);
+                
+                // Simple test animation
+                gsap.to('.hero-title', {
+                    scrollTrigger: {
+                        trigger: '.hero-title',
+                        start: 'top 80%',
+                        markers: true,
+                        onEnter: () => console.log('🎯 HERO TITLE TRIGGERED!'),
+                        onUpdate: (self) => console.log('🎯 Progress:', self.progress.toFixed(2))
+                    },
+                    x: 50,
+                    duration: 1
+                });
+                
+                console.log('✅ ScrollTrigger animation created!');
+            } else {
+                console.error('❌ GSAP or ScrollTrigger not loaded');
+            }
+        }, 1000);
     });
     </script>
 </body>
